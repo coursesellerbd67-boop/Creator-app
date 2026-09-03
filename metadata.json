@@ -1,0 +1,6 @@
+{
+  "name": "STUDIO X",
+  "description": "STUDIO X - বাংলা ভয়েস, এআই চ্যাট, ওয়েবসাইট, অ্যাপ, ভিডিও ও এজেন্ট ওয়ার্কস্পেস সমন্বিত অল-ইন-ওয়ান এআই স্টুডিও।",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

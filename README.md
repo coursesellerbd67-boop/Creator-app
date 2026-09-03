@@ -1,11 +1,85 @@
-<div align="center">
+# STUDIO X - অল-ইন-ওয়ান এআই ক্রিয়েশন স্টুডিও (All-in-One AI Studio)
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+STUDIO X হলো একটি আধুনিক, শক্তিশালী ফুল-স্ট্যাক এআই ক্রিয়েশন স্যুট। এতে রয়েছে বাংলা টেক্সট-টু-স্পিচ নিউরাল অডিও ইঞ্জিন, এআই চ্যাট ও রিসার্চ, ওয়েবসাইট ও মোবাইল অ্যাপ প্রোটোটাইপার, স্বয়ংক্রিয় এআই এজেন্ট, ভিডিও স্টোরিবোর্ড, কোড জেনারেটর এবং মাস্টার অ্যাডমিন কন্ট্রোল প্যানেল।
 
-  <h1>Built with AI Studio</h2>
+---
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+## 🚀 ফিচারসমূহ (Key Features)
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
+1. **🎙️ বাংলা ভয়েস স্টুডিও (Bangla Neural TTS)**
+   - Fenrir, Kore, Puck, Zephyr, Charon ভয়েস মডেল।
+   - ইসলামিক ওয়াজ, মোটিভেশনাল, সংবাদ পাঠ ও স্টোরিটেলিং টোন।
+   - রিয়েল-টাইম ওয়েভফর্ম ও হাই-কোয়ালিটি WAV ডাউনলোড।
 
-</div>
+2. **🤖 চ্যাট স্টুডিও ও ডিপ রিজনিং (Chat Studio)**
+   - Gemini 3.8 Flash / Gemini 3.1 Pro দিয়ে যেকোনো বিষয়ে আলোচনা ও গবেষণা।
+   - টেক্সট থেকে এক ক্লিকে বাংলা ভয়েস তৈরি।
+
+3. **🌐 ওয়েবসাইট স্টুডিও (Website Studio)**
+   - লাইভ প্রিভিউ সহ রেসপনসিভ ল্যান্ডিং পেজ জেনারেশন।
+   - Desktop, Tablet, Mobile ভিউ ও এক ক্লিকে HTML কোড ডাউনলোড।
+
+4. **📱 মোবাইল অ্যাপ স্টুডিও (App Studio)**
+   - ইন্টারঅ্যাক্টিভ স্মার্টফোন ফ্রেমওয়ার্ক ও মডার্ন ইউআই প্রোটোটাইপিং।
+
+5. **⚡ স্বয়ংক্রিয় এআই এজেন্ট পাইপলাইন (AI Agent Studio)**
+   - মাল্টি-স্টেপ ওয়ার্কফ্লো (Research ➔ Script ➔ Image ➔ Voice ➔ Video ➔ SEO ➔ Publish)।
+
+6. **🎬 ভিডিও স্টুডিও (Video Studio)**
+   - সিন-বাই-সিন স্টোরিবোর্ড, সিনেমাটিক ডিরেকশন ও প্রিভিউ প্লেয়ার।
+
+7. **💻 কোড ও ডেটা স্টুডিও (Code & Document Studio)**
+   - যেকোনো ল্যাঙ্গুয়েজের কোড জেনারেশন, বাংলা অনুবাদ ও বাগ ফিক্সিং।
+
+8. **🛡️ অ্যাডমিন মাস্টার কন্ট্রোল প্যানেল (Admin Panel)**
+   - সিস্টেম প্রম্পট এডিটর, মডেল সিলেকশন, লাইভ অডিট লগ ও ব্যাকআপ এক্সপোর্ট।
+
+---
+
+## 🛠️ ইন্সটলেশন ও রান করার নিয়ম (How to Run Locally)
+
+### ১. ডিপেনডেন্সি ইন্সটল করুন
+```bash
+npm install
+```
+
+### ২. এনভায়রনমেন্ট ভ্যারিয়েবল সেট করুন
+`.env` ফাইল তৈরি করে আপনার Gemini API Key দিন:
+```env
+GEMINI_API_KEY=your_google_gemini_api_key_here
+```
+
+> **API Key পেতে ভিজিট করুন:** [Google AI Studio](https://aistudio.google.com/) (সম্পূর্ণ ফ্রি)
+
+### ৩. লোকাল সার্ভার চালু করুন
+```bash
+npm run dev
+```
+
+ব্রাউজারে ভিজিট করুন:
+```
+http://localhost:3000
+```
+
+### ৪. প্রোডাকশন বিল্ড (Production Build)
+```bash
+npm run build
+npm start
+```
+
+---
+
+## 📁 প্রজেক্ট স্ট্রাকচার (Project Structure)
+```
+├── src/
+│   ├── components/      # UI কম্পোনেন্টসমূহ (AudioStudio, ChatStudio, AdminPanel ইত্যাদি)
+│   ├── data/            # প্রি-বিল্ট টেমপ্লেট ও কনফিগারেশন
+│   ├── lib/             # ইউটিলিটি ফাংশন
+│   ├── types.ts         # টাইপস্ক্রিপ্ট ইন্টারফেস ও টাইপস
+│   ├── App.tsx          # মূল অ্যাপ্লিকেশন কনটেইনার
+│   └── main.tsx         # এন্ট্রি পয়েন্ট
+├── server.ts            # Express ব্যাকএন্ড ও Gemini TTS/Chat API
+├── package.json         # প্যাকেজ কনফিগারেশন
+├── tsconfig.json        # টাইপস্ক্রিপ্ট কনফিগারেশন
+└── vite.config.ts       # Vite কনফিগারেশন
+```
