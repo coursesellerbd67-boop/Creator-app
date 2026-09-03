@@ -49,27 +49,32 @@ export const PRESET_QUOTES: PresetQuote[] = [
 export const TONE_OPTIONS: ToneOption[] = [
   {
     id: "natural",
-    label: "স্বাভাবিক ও আন্তরিক",
-    promptInstruction: "Speak naturally, warmly, and clearly in Bengali with proper pauses and emotion",
+    label: "স্বাভাবিক ও আন্তরিক (Calm / Natural)",
+    promptInstruction: "Speak naturally, warmly, calmly, and clearly in Bengali with proper pauses and emotion",
+  },
+  {
+    id: "excited",
+    label: "উত্তেজনাপূর্ণ ও প্রাণবন্ত (Excited / Energetic)",
+    promptInstruction: "Speak with excitement, high energy, enthusiasm, and upbeat cadence in Bengali",
+  },
+  {
+    id: "corporate",
+    label: "কর্পোরেট ও প্রফেশনাল (Corporate / Formal)",
+    promptInstruction: "Speak in an articulate, formal, polished corporate business tone in Bengali",
+  },
+  {
+    id: "storytelling",
+    label: "গল্প বলার ভঙ্গি (Storytelling / Narrative)",
+    promptInstruction: "Narrate like a captivating storyteller with expressive emotional pauses in Bengali",
   },
   {
     id: "islamic",
-    label: "গম্ভীর ও ওয়াজের ভঙ্গি",
+    label: "গম্ভীর ও ওয়াজের ভঙ্গি (Islamic Spiritual)",
     promptInstruction: "Speak with a deep, reflective, resonant, and respectful Islamic scholarly tone in Bengali, emphasizing heart-touching wisdom",
   },
   {
     id: "motivational",
-    label: "অনুপ্রেরণামূলক ও বলিষ্ঠ",
+    label: "অনুপ্রেরণামূলক ও বলিষ্ঠ (Motivational)",
     promptInstruction: "Speak with passion, confidence, high energy, and uplifting inspiration in Bengali",
-  },
-  {
-    id: "story",
-    label: "গল্প বলার শান্ত সুর",
-    promptInstruction: "Narrate gently like a comforting storyteller in Bengali with soft cadence and imagery",
-  },
-  {
-    id: "news",
-    label: "সংবাদ উপস্থাপক",
-    promptInstruction: "Speak like a professional broadcast news anchor in Bengali with clear diction and neutral cadence",
   },
 ];

@@ -10,7 +10,10 @@ export type StudioType =
   | "code"
   | "doc"
   | "workflow"
+  | "custom_agent"
   | "admin";
+
+export type CreationMode = "simple" | "pro" | "agent";
 
 export type EngineType = "gemini" | "browser";
 
@@ -53,7 +56,18 @@ export interface AgentStep {
   status: "pending" | "running" | "completed" | "failed";
   output?: string;
   details?: string[];
-  actionType?: "research" | "script" | "image" | "voice" | "video" | "seo" | "final";
+  actionType?:
+    | "planning"
+    | "research"
+    | "script"
+    | "image"
+    | "voice"
+    | "video"
+    | "subtitle"
+    | "thumbnail"
+    | "seo"
+    | "final";
+  audioBase64?: string;
 }
 
 export interface ProjectVersion {
@@ -74,6 +88,106 @@ export interface SavedProject {
   versions: ProjectVersion[];
   currentVersionIndex?: number;
   previewSnippet?: string;
+  tags?: string[];
+}
+
+export interface ProjectMemoryItem {
+  id: string;
+  projectId?: string;
+  projectTitle: string;
+  studio: StudioType;
+  summary: string;
+  keyEntities: string[];
+  lastContext: string;
+  timestamp: string;
+}
+
+// Full Multi-File Project for Code Studio
+export interface ProjectFile {
+  id?: string;
+  name?: string;
+  path: string;
+  content: string;
+  language: string;
+  description?: string;
+}
+
+// Video Timeline Editor Types
+export interface VideoSceneItem {
+  id: number;
+  name: string;
+  timeStart: number; // in seconds
+  duration: number; // in seconds
+  shotType: string;
+  visualDescription: string;
+  voiceoverScript: string;
+  subtitle: string;
+  bgImage: string;
+  aspectRatio?: "16:9" | "9:16" | "1:1";
+}
+
+export interface VideoTimelineData {
+  scenes: VideoSceneItem[];
+  voiceTrack: {
+    enabled: boolean;
+    volume: number;
+    voiceName: string;
+    speed: number;
+  };
+  musicTrack: {
+    enabled: boolean;
+    volume: number;
+    trackName: string;
+    mood: string;
+  };
+  sfxTrack: {
+    enabled: boolean;
+    volume: number;
+    effects: { time: number; name: string }[];
+  };
+  subtitleTrack: {
+    enabled: boolean;
+    fontSize: number;
+    color: string;
+  };
+  aspectRatio: "16:9" | "9:16" | "1:1";
+}
+
+// Workflow Studio Types
+export interface WorkflowNode {
+  id: string;
+  type: "prompt" | "research" | "script" | "image" | "voice" | "video" | "seo" | "input" | "text" | "audio" | "code";
+  title: string;
+  titleBn?: string;
+  status: "idle" | "running" | "completed" | "error" | "pending";
+  inputKey?: string;
+  output?: string;
+  config?: any;
+}
+
+// Custom AI Agent Types
+export interface CustomAgent {
+  id: string;
+  name: string;
+  role?: string;
+  description?: string;
+  instructions?: string;
+  systemPrompt?: string;
+  avatar?: string;
+  avatarIcon?: string;
+  model?: string;
+  allowedTools?: string[];
+  knowledgeBaseFiles?: string[];
+  tools?: {
+    webSearch?: boolean;
+    imageGen?: boolean;
+    voiceGen?: boolean;
+    seoOptimizer?: boolean;
+    docIntelligence?: boolean;
+    [key: string]: boolean | undefined;
+  };
+  memoryEnabled?: boolean;
+  createdAt?: string;
 }
 
 export interface AdminConfig {
@@ -91,7 +205,7 @@ export interface AdminConfig {
 export interface TemplateItem {
   id: string;
   title: string;
-  category: "youtube" | "website" | "app" | "creative" | "business";
+  category: "youtube" | "website" | "app" | "creative" | "business" | "workflow";
   description: string;
   prompt: string;
   targetStudio: StudioType;

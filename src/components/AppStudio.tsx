@@ -9,45 +9,73 @@ import {
   Code2,
   RefreshCw,
   Home,
-  Compass,
-  Bell,
   User,
-  Heart,
-  Calendar,
+  Settings,
+  Trophy,
+  Wallet,
+  Gamepad2,
+  LogIn,
+  UserPlus,
+  ArrowRight,
+  Shield,
+  CreditCard,
+  Bell,
+  Search,
   Flame,
+  CheckCircle2,
 } from "lucide-react";
 
 interface AppStudioProps {
   initialPrompt?: string;
 }
 
+type ScreenType =
+  | "home"
+  | "tournament"
+  | "leaderboard"
+  | "wallet"
+  | "profile"
+  | "login"
+  | "register"
+  | "settings";
+
 export const AppStudio: React.FC<AppStudioProps> = ({ initialPrompt = "" }) => {
   const [prompt, setPrompt] = useState(
-    initialPrompt ||
-      "একটি আধুনিক ফিটনেস ও হেলথ ট্র্যাকার মোবাইল অ্যাপ (ডার্ক ও নিয়ন একসেন্ট থিম, দৈনিক স্টেপ ট্র্যাকার, ওয়ার্কআউট রুটিন এবং হার্টরেট সহ)।"
+    initialPrompt || "একটা Free Fire tournament app বানাও—Home, Tournament, Leaderboard, Wallet, Profile সহ।"
   );
   const [isGenerating, setIsGenerating] = useState(false);
   const [activeTab, setActiveTab] = useState<"preview" | "code">("preview");
-  const [activeScreen, setActiveScreen] = useState<"home" | "workouts" | "profile">("home");
+  const [activeScreen, setActiveScreen] = useState<ScreenType>("home");
+  const [codePlatform, setCodePlatform] = useState<"react-native" | "flutter">("react-native");
   const [copied, setCopied] = useState(false);
 
-  // App interactive states
-  const [waterGlasses, setWaterGlasses] = useState(5);
-  const [workoutChecked, setWorkoutChecked] = useState<{ [k: string]: boolean }>({
-    "1": true,
-    "2": false,
-    "3": false,
-  });
+  // App mock interactive state
+  const [walletBalance, setWalletBalance] = useState(1450);
+  const [joinedTournaments, setJoinedTournaments] = useState<{ [k: number]: boolean }>({ 1: true });
+  const [ign, setIgn] = useState("Pro_Sniper_BD");
+  const [freeFireUid, setFreeFireUid] = useState("2847192841");
+
+  const screens: { id: ScreenType; label: string; icon: any }[] = [
+    { id: "home", label: "Home", icon: Home },
+    { id: "tournament", label: "Tournament", icon: Gamepad2 },
+    { id: "leaderboard", label: "Leaderboard", icon: Trophy },
+    { id: "wallet", label: "Wallet", icon: Wallet },
+    { id: "profile", label: "Profile", icon: User },
+    { id: "login", label: "Login", icon: LogIn },
+    { id: "register", label: "Register", icon: UserPlus },
+    { id: "settings", label: "Settings", icon: Settings },
+  ];
 
   const handleGenerate = async () => {
+    if (!prompt.trim()) return;
     setIsGenerating(true);
     try {
-      // Call API for app logic / code
       await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          prompt: `Generate an interactive mobile app UI specification for: "${prompt}". Explain screen hierarchy and component structure in Bengali.`,
+          type: "app_prototype",
+          prompt: `Generate an 8-screen mobile application specification and architecture for: "${prompt}". Focus on Home, Login, Register, Tournament/Catalog, Leaderboard/Stats, Profile, Wallet/Checkout, Settings.`,
         }),
       });
     } catch (e) {
@@ -57,432 +85,648 @@ export const AppStudio: React.FC<AppStudioProps> = ({ initialPrompt = "" }) => {
     }
   };
 
-  const sampleReactCode = `// React Native / Expo App Component
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+  const handleJoinMatch = (id: number, fee: number) => {
+    if (joinedTournaments[id]) return;
+    if (walletBalance < fee) {
+      alert("ওয়ালেটে পর্যাপ্ত ব্যালেন্স নেই! দয়া করে ওয়ালেট থেকে রিচার্জ করুন।");
+      setActiveScreen("wallet");
+      return;
+    }
+    setWalletBalance((prev) => prev - fee);
+    setJoinedTournaments((prev) => ({ ...prev, [id]: true }));
+    alert("টুর্নামেন্টে রেজিস্ট্রেশন সফল হয়েছে! ম্যাচ শুরুর ১৫ মিনিট আগে রুম আইডি এবং পাসওয়ার্ড পাঠানো হবে।");
+  };
 
-export default function FitnessApp() {
-  const [waterCount, setWaterCount] = useState(5);
+  const sampleReactNativeCode = `// React Native / Expo - Free Fire Tournament App
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
+
+export default function TournamentApp() {
+  const [balance, setBalance] = useState(1450);
+  const [activeTab, setActiveTab] = useState('home');
 
   return (
-    <ScrollView style={styles.container}>
-      {/* Header */}
+    <View style={styles.container}>
+      {/* Top Header */}
       <View style={styles.header}>
-        <Text style={styles.greeting}>শুভ সকাল, তানভীর 👋</Text>
-        <Text style={styles.sub}>আজকের ফিটনেস লক্ষ্য: ৮৫% অর্জিত</Text>
-      </View>
-
-      {/* Main Stats Card */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>দৈনিক পদক্ষেপ (Steps)</Text>
-        <Text style={styles.statBig}>৭,৪২০ / ১০,০০০</Text>
-      </View>
-
-      {/* Water Counter */}
-      <View style={styles.waterBox}>
-        <Text style={styles.boxTitle}>পানি পান: {waterCount} গ্লাস</Text>
-        <TouchableOpacity onPress={() => setWaterCount(c => c + 1)} style={styles.btn}>
-          <Text style={styles.btnText}>+ ১ গ্লাস যোগ করুন</Text>
+        <Text style={styles.appTitle}>✦ FF BATTLE PRO</Text>
+        <TouchableOpacity style={styles.balanceBadge}>
+          <Text style={styles.balanceText}>৳ {balance}</Text>
         </TouchableOpacity>
       </View>
-    </ScrollView>
+
+      {/* Main Content Area */}
+      <ScrollView style={styles.content}>
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>🔥 Daily Grand Tournament</Text>
+          <Text style={styles.cardSub}>প্রাইজ পুল: ৳ ৫,০০০ | এন্ট্রি ফি: ৳ ৫০</Text>
+          <TouchableOpacity style={styles.joinBtn}>
+            <Text style={styles.joinText}>এখনই জয়েন করুন</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0f172a', padding: 16 },
-  header: { marginTop: 40, marginBottom: 20 },
-  greeting: { fontSize: 24, fontWeight: 'bold', color: '#fff' },
-  sub: { fontSize: 14, color: '#94a3b8' },
-  card: { backgroundColor: '#1e293b', borderRadius: 16, padding: 20, marginBottom: 16 },
-  cardTitle: { color: '#38bdf8', fontSize: 14, fontWeight: '600' },
-  statBig: { color: '#fff', fontSize: 32, fontWeight: 'bold', marginTop: 8 },
-  waterBox: { backgroundColor: '#1e293b', padding: 20, borderRadius: 16 },
-  boxTitle: { color: '#fff', fontSize: 16, fontWeight: '600', marginBottom: 12 },
-  btn: { backgroundColor: '#0284c7', padding: 12, borderRadius: 12, alignItems: 'center' },
-  btnText: { color: '#fff', fontWeight: 'bold' }
+  container: { flex: 1, backgroundColor: '#0f172a' },
+  header: { padding: 16, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  appTitle: { color: '#f59e0b', fontSize: 18, fontWeight: 'bold' },
+  balanceBadge: { backgroundColor: '#1e293b', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20 },
+  balanceText: { color: '#10b981', fontWeight: 'bold' },
+  content: { flex: 1, padding: 16 },
+  card: { backgroundColor: '#1e293b', borderRadius: 16, padding: 16, marginBottom: 12 },
+  cardTitle: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
+  cardSub: { color: '#94a3b8', fontSize: 12, marginVertical: 6 },
+  joinBtn: { backgroundColor: '#f59e0b', padding: 10, borderRadius: 10, alignItems: 'center' },
+  joinText: { color: '#000', fontWeight: 'bold' }
 });`;
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(sampleReactCode);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+  const sampleFlutterCode = `// Flutter Dart - Free Fire Tournament App
+import 'package:flutter/material.dart';
+
+void main() => runApp(const TournamentApp());
+
+class TournamentApp extends StatelessWidget {
+  const TournamentApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: const Color(0xFF0F172A),
+        primaryColor: const Color(0xFFF59E0B),
+      ),
+      home: const HomeScreen(),
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('✦ FF BATTLE PRO', style: TextStyle(color: Color(0xFFF59E0B), fontWeight: FontWeight.bold)),
+        backgroundColor: const Color(0xFF0F172A),
+        actions: [
+          Container(
+            margin: const EdgeInsets.only(right: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: const Color(0xFF1E293B),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: const Center(
+              child: Text('৳ 1,450', style: TextStyle(color: Color(0xFF10B981), fontWeight: FontWeight.bold)),
+            ),
+          ),
+        ],
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          Card(
+            color: const Color(0xFF1E293B),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('🔥 Daily Grand Tournament', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                  const SizedBox(height: 6),
+                  const Text('প্রাইজ পুল: ৳ ৫,০০০ | এন্ট্রি ফি: ৳ ৫০', style: TextStyle(color: Colors.grey)),
+                  const SizedBox(height: 12),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFF59E0B), foregroundColor: Colors.black),
+                    onPressed: () {},
+                    child: const Text('এখনই জয়েন করুন', style: TextStyle(fontWeight: FontWeight.bold)),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}`;
 
   return (
-    <div className="h-[calc(100vh-65px)] flex flex-col bg-neutral-100 overflow-hidden">
-      {/* Top Bar */}
-      <div className="bg-white border-b border-neutral-200 px-4 py-2.5 flex items-center justify-between gap-3 shrink-0">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold">
-            <Smartphone className="w-4 h-4" />
+    <div id="app-studio-container" className="max-w-6xl mx-auto px-4 py-6 space-y-6">
+      {/* Header Banner */}
+      <div className="bg-gradient-to-r from-amber-950 via-slate-900 to-neutral-900 rounded-3xl p-6 text-white shadow-xl border border-amber-500/20 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-semibold mb-2">
+            <Smartphone className="w-3.5 h-3.5" />
+            <span>APP STUDIO V2 • INTERACTIVE MULTI-SCREEN PROTOTYPER</span>
           </div>
-          <div>
-            <span className="font-bold text-neutral-900 text-sm font-['Hind_Siliguri',sans-serif]">
-              মোবাইল অ্যাপ বিল্ডার
-            </span>
-            <span className="text-[11px] text-neutral-500 block -mt-0.5">
-              ইন্টারেক্টিভ ফোন প্রোটোটাইপ ও React Native/Flutter কোড
-            </span>
-          </div>
+          <h1 className="text-2xl md:text-3xl font-extrabold text-white">
+            মোবাইল অ্যাপ প্রোটোটাইপার ও কোড জেনারেটর
+          </h1>
+          <p className="text-amber-200/90 text-xs md:text-sm mt-1">
+            Home, Login, Register, Tournament, Leaderboard, Profile, Wallet এবং Settings—লাইভ ক্লিক্যাবল ইন্টারঅ্যাকশন।
+          </p>
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="flex bg-neutral-100 p-0.5 rounded-lg border border-neutral-200 text-xs">
-            <button
-              onClick={() => setActiveTab("preview")}
-              className={`px-3 py-1 rounded font-medium transition-colors ${
-                activeTab === "preview"
-                  ? "bg-white text-neutral-900 shadow-xs"
-                  : "text-neutral-600 hover:text-neutral-900"
-              }`}
-            >
-              ইন্টারেক্টিভ প্রোটোটাইপ
-            </button>
-            <button
-              onClick={() => setActiveTab("code")}
-              className={`px-3 py-1 rounded font-medium transition-colors ${
-                activeTab === "code"
-                  ? "bg-white text-neutral-900 shadow-xs"
-                  : "text-neutral-600 hover:text-neutral-900"
-              }`}
-            >
-              React Native কোড
-            </button>
-          </div>
-
           <button
-            onClick={handleCopy}
-            className="p-1.5 rounded-lg border border-neutral-200 text-neutral-700 hover:bg-neutral-100 text-xs flex items-center gap-1"
+            onClick={() => setActiveTab("preview")}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              activeTab === "preview" ? "bg-amber-500 text-black shadow" : "bg-white/10 text-white"
+            }`}
           >
-            {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-            <span className="hidden sm:inline">কপি কোড</span>
+            Live Preview
+          </button>
+          <button
+            onClick={() => setActiveTab("code")}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              activeTab === "code" ? "bg-amber-500 text-black shadow" : "bg-white/10 text-white"
+            }`}
+          >
+            Source Code
           </button>
         </div>
       </div>
 
-      {/* Main Workspace */}
-      <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
-        {/* Left Side: Prompt & Screen selector */}
-        <div className="w-full md:w-80 lg:w-96 bg-white border-r border-neutral-200 p-4 flex flex-col gap-4 shrink-0 overflow-y-auto">
-          <div className="space-y-1.5">
-            <label className="text-xs font-bold text-neutral-800 font-['Hind_Siliguri',sans-serif] flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
-              <span>মোবাইল অ্যাপ প্রম্পট</span>
+      {/* Main Studio Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left: Interactive Phone Mockup */}
+        <div className="lg:col-span-7 bg-neutral-950 rounded-2xl p-6 border border-neutral-800 shadow-xl flex flex-col items-center justify-center">
+          {activeTab === "preview" ? (
+            <div className="w-[330px] h-[640px] bg-slate-900 rounded-[40px] border-4 border-neutral-700 shadow-2xl relative flex flex-col overflow-hidden text-white">
+              {/* Phone Speaker & Camera Notch */}
+              <div className="absolute top-2 left-1/2 -translate-x-1/2 w-28 h-4 bg-neutral-800 rounded-full z-30 flex items-center justify-center">
+                <span className="w-2.5 h-2.5 rounded-full bg-neutral-900" />
+              </div>
+
+              {/* Status Bar */}
+              <div className="pt-7 px-5 pb-2 flex items-center justify-between text-[11px] font-mono text-neutral-400 shrink-0">
+                <span>09:41</span>
+                <span>5G 98%</span>
+              </div>
+
+              {/* App In-Screen Top Header */}
+              <div className="px-4 py-2.5 bg-slate-950/80 border-b border-slate-800 flex items-center justify-between shrink-0">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-amber-500 font-extrabold text-sm tracking-wider">
+                    ✦ FF BATTLE PRO
+                  </span>
+                </div>
+                <div
+                  onClick={() => setActiveScreen("wallet")}
+                  className="cursor-pointer flex items-center gap-1 px-2.5 py-1 bg-emerald-950/80 border border-emerald-500/40 rounded-full text-emerald-400 text-xs font-bold"
+                >
+                  <Wallet className="w-3 h-3" />
+                  <span>৳ {walletBalance}</span>
+                </div>
+              </div>
+
+              {/* Screen Content Container */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                {/* 1. HOME SCREEN */}
+                {activeScreen === "home" && (
+                  <div className="space-y-3">
+                    <div className="p-3 bg-gradient-to-r from-amber-600 to-orange-700 rounded-2xl text-white shadow">
+                      <span className="text-[10px] bg-black/40 px-2 py-0.5 rounded-full font-bold">
+                        FEATURED
+                      </span>
+                      <h3 className="font-bold text-sm mt-1">Free Fire Pro Cup Season 4</h3>
+                      <p className="text-xs text-amber-100 mt-0.5">মোট প্রাইজ পুল: ৳ ৫০,০০০</p>
+                    </div>
+
+                    <div className="flex justify-between items-center text-xs font-bold text-neutral-300">
+                      <span>আজকের লাইভ টুর্নামেন্ট</span>
+                      <button
+                        onClick={() => setActiveScreen("tournament")}
+                        className="text-amber-400 text-[11px]"
+                      >
+                        সব দেখুন →
+                      </button>
+                    </div>
+
+                    <div className="p-3 bg-slate-800 rounded-xl border border-slate-700 space-y-2">
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="font-bold text-white">Solo Rush #102</span>
+                        <span className="text-amber-400 font-bold">৳ ২০০০ পুল</span>
+                      </div>
+                      <div className="text-[11px] text-neutral-400 flex justify-between">
+                        <span>ম্যাপ: Bermuda</span>
+                        <span>এন্ট্রি: ৳ ৫০</span>
+                      </div>
+                      <button
+                        onClick={() => handleJoinMatch(2, 50)}
+                        className={`w-full py-1.5 rounded-lg text-xs font-bold ${
+                          joinedTournaments[2]
+                            ? "bg-emerald-600 text-white"
+                            : "bg-amber-500 text-black hover:bg-amber-400"
+                        }`}
+                      >
+                        {joinedTournaments[2] ? "রেজিস্ট্রেশন সম্পন্ন ✓" : "জয়েন করুন (৳৫০)"}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* 2. TOURNAMENT SCREEN */}
+                {activeScreen === "tournament" && (
+                  <div className="space-y-3">
+                    <h3 className="text-xs font-bold text-amber-400 uppercase tracking-wider">
+                      টুর্নামেন্ট তালিকা (CS & Battle Royale)
+                    </h3>
+                    {[
+                      { id: 1, title: "Squad Bermuda Clash", prize: "৳ ৫০০০", fee: 100, slots: "38/48" },
+                      { id: 2, title: "Duo Purgatory Snipe", prize: "৳ ২৫০০", fee: 60, slots: "40/48" },
+                      { id: 3, title: "Solo Custom Night", prize: "৳ ১৫০০", fee: 40, slots: "45/48" },
+                    ].map((tour) => (
+                      <div key={tour.id} className="p-3 bg-slate-800 rounded-xl border border-slate-700 space-y-2">
+                        <div className="flex justify-between items-center text-xs">
+                          <span className="font-bold text-white">{tour.title}</span>
+                          <span className="text-emerald-400 font-bold">{tour.prize}</span>
+                        </div>
+                        <div className="text-[11px] text-neutral-400 flex justify-between">
+                          <span>স্লট: {tour.slots}</span>
+                          <span>ফি: ৳ {tour.fee}</span>
+                        </div>
+                        <button
+                          onClick={() => handleJoinMatch(tour.id, tour.fee)}
+                          className={`w-full py-1.5 rounded-lg text-xs font-bold ${
+                            joinedTournaments[tour.id]
+                              ? "bg-emerald-600 text-white"
+                              : "bg-amber-500 text-black hover:bg-amber-400"
+                          }`}
+                        >
+                          {joinedTournaments[tour.id] ? "অলরেডি জয়েন করেছেন ✓" : `জয়েন করুন (৳${tour.fee})`}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* 3. LEADERBOARD SCREEN */}
+                {activeScreen === "leaderboard" && (
+                  <div className="space-y-2.5">
+                    <h3 className="text-xs font-bold text-amber-400 uppercase tracking-wider">
+                      টপ প্লেয়ার লিডারবোর্ড
+                    </h3>
+                    {[
+                      { rank: 1, name: "Killer_BD_99", kills: 142, prizeWon: "৳ ৮,৪০০" },
+                      { rank: 2, name: "Pro_Sniper_BD (You)", kills: 128, prizeWon: "৳ ৭,২০০" },
+                      { rank: 3, name: "Headshot_King", kills: 115, prizeWon: "৳ ৫,১০০" },
+                      { rank: 4, name: "Shadow_Hunter", kills: 98, prizeWon: "৳ ৩,৫০০" },
+                    ].map((player) => (
+                      <div
+                        key={player.rank}
+                        className={`p-2.5 rounded-xl border flex items-center justify-between text-xs ${
+                          player.rank === 1
+                            ? "bg-amber-950/60 border-amber-500/50"
+                            : "bg-slate-800 border-slate-700"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="w-5 h-5 rounded-full bg-slate-700 flex items-center justify-center font-bold text-[10px]">
+                            {player.rank}
+                          </span>
+                          <span className="font-bold text-white truncate max-w-[120px]">{player.name}</span>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-amber-400 font-bold block">{player.prizeWon}</span>
+                          <span className="text-[10px] text-neutral-400">{player.kills} Kills</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* 4. WALLET SCREEN */}
+                {activeScreen === "wallet" && (
+                  <div className="space-y-3">
+                    <div className="p-4 bg-slate-800 rounded-2xl border border-slate-700 text-center space-y-1">
+                      <span className="text-xs text-neutral-400">বর্তমান একাউন্ট ব্যালেন্স</span>
+                      <h2 className="text-2xl font-black text-emerald-400">৳ {walletBalance}</h2>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={() => {
+                          setWalletBalance((prev) => prev + 500);
+                          alert("bKash-এর মাধ্যমে ৳৫০০ সফলভাবে ডিপোজিট হয়েছে!");
+                        }}
+                        className="py-2 px-3 bg-pink-600 hover:bg-pink-700 rounded-xl text-xs font-bold text-white shadow"
+                      >
+                        + ৳৫০০ ডিপোজিট
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (walletBalance >= 500) {
+                            setWalletBalance((prev) => prev - 500);
+                            alert("উইথড্র রিকোয়েস্ট সফল হয়েছে! ৩ ঘণ্টার মধ্যে bKash-এ টাকা পৌঁছে যাবে।");
+                          } else {
+                            alert("নূন্যতম উইথড্র ৳৫০০");
+                          }
+                        }}
+                        className="py-2 px-3 bg-orange-600 hover:bg-orange-700 rounded-xl text-xs font-bold text-white shadow"
+                      >
+                        টাকা উত্তোলন
+                      </button>
+                    </div>
+
+                    <div className="text-xs font-bold text-neutral-400 pt-1">পেমেন্ট গেটওয়ে:</div>
+                    <div className="p-2.5 bg-slate-800/60 rounded-xl border border-slate-700 flex items-center justify-between text-xs">
+                      <span>বিকাশ / নগদ / রকেট অটো-পে</span>
+                      <span className="text-emerald-400 font-bold text-[10px]">সক্রিয়</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* 5. PROFILE SCREEN */}
+                {activeScreen === "profile" && (
+                  <div className="space-y-3">
+                    <div className="text-center p-3 bg-slate-800 rounded-2xl border border-slate-700 space-y-1">
+                      <div className="w-14 h-14 rounded-full bg-amber-500 text-black font-black text-xl flex items-center justify-center mx-auto">
+                        PS
+                      </div>
+                      <h4 className="font-bold text-sm text-white">{ign}</h4>
+                      <p className="text-[11px] text-neutral-400">FF UID: {freeFireUid}</p>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                      <div className="p-2 bg-slate-800 rounded-xl">
+                        <span className="text-[10px] text-neutral-400 block">লেভেল</span>
+                        <span className="font-bold text-amber-400">৫৮</span>
+                      </div>
+                      <div className="p-2 bg-slate-800 rounded-xl">
+                        <span className="text-[10px] text-neutral-400 block">ম্যাচ</span>
+                        <span className="font-bold text-white">১৪২</span>
+                      </div>
+                      <div className="p-2 bg-slate-800 rounded-xl">
+                        <span className="text-[10px] text-neutral-400 block">উইন রেট</span>
+                        <span className="font-bold text-emerald-400">৬৮%</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. LOGIN SCREEN */}
+                {activeScreen === "login" && (
+                  <div className="space-y-3 pt-2">
+                    <h3 className="text-sm font-bold text-white text-center">একাউন্টে লগইন করুন</h3>
+                    <input
+                      type="text"
+                      placeholder="মোবাইল নম্বর অথবা ইমেইল"
+                      defaultValue="01712345678"
+                      className="w-full px-3 py-2 text-xs bg-slate-800 border border-slate-700 rounded-xl text-white"
+                    />
+                    <input
+                      type="password"
+                      placeholder="পাসওয়ার্ড"
+                      defaultValue="••••••••"
+                      className="w-full px-3 py-2 text-xs bg-slate-800 border border-slate-700 rounded-xl text-white"
+                    />
+                    <button
+                      onClick={() => {
+                        alert("লগইন সফল হয়েছে!");
+                        setActiveScreen("home");
+                      }}
+                      className="w-full py-2 bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs rounded-xl"
+                    >
+                      লগইন করুন
+                    </button>
+                  </div>
+                )}
+
+                {/* 7. REGISTER SCREEN */}
+                {activeScreen === "register" && (
+                  <div className="space-y-2.5 pt-1">
+                    <h3 className="text-sm font-bold text-white text-center">নতুন একাউন্ট খুলুন</h3>
+                    <input
+                      type="text"
+                      placeholder="আপনার নাম"
+                      defaultValue="তানভীর আহমেদ"
+                      className="w-full px-3 py-2 text-xs bg-slate-800 border border-slate-700 rounded-xl text-white"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Free Fire ইন-গেম নাম (IGN)"
+                      value={ign}
+                      onChange={(e) => setIgn(e.target.value)}
+                      className="w-full px-3 py-2 text-xs bg-slate-800 border border-slate-700 rounded-xl text-white"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Free Fire UID"
+                      value={freeFireUid}
+                      onChange={(e) => setFreeFireUid(e.target.value)}
+                      className="w-full px-3 py-2 text-xs bg-slate-800 border border-slate-700 rounded-xl text-white"
+                    />
+                    <button
+                      onClick={() => {
+                        alert("রেজিস্ট্রেশন সফল হয়েছে!");
+                        setActiveScreen("home");
+                      }}
+                      className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl"
+                    >
+                      সাইন আপ করুন
+                    </button>
+                  </div>
+                )}
+
+                {/* 8. SETTINGS SCREEN */}
+                {activeScreen === "settings" && (
+                  <div className="space-y-2 text-xs">
+                    <h3 className="font-bold text-amber-400 uppercase tracking-wider mb-2">অ্যাপ সেটিংস</h3>
+                    <div className="p-2.5 bg-slate-800 rounded-xl flex items-center justify-between">
+                      <span>ম্যাচ নোটিফিকেশন</span>
+                      <input type="checkbox" defaultChecked className="accent-amber-500" />
+                    </div>
+                    <div className="p-2.5 bg-slate-800 rounded-xl flex items-center justify-between">
+                      <span>ডার্ক মোড সক্রিয়</span>
+                      <span className="text-emerald-400 font-bold">অন</span>
+                    </div>
+                    <div className="p-2.5 bg-slate-800 rounded-xl flex items-center justify-between">
+                      <span>ভাষা (Language)</span>
+                      <span className="text-amber-400 font-bold">বাংলা</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Bottom Navigation Bar */}
+              <div className="pt-2 pb-5 px-3 bg-slate-950 border-t border-slate-800 flex items-center justify-around shrink-0">
+                <button
+                  onClick={() => setActiveScreen("home")}
+                  className={`flex flex-col items-center gap-0.5 text-[10px] ${
+                    activeScreen === "home" ? "text-amber-400 font-bold" : "text-neutral-400"
+                  }`}
+                >
+                  <Home className="w-4 h-4" />
+                  <span>Home</span>
+                </button>
+                <button
+                  onClick={() => setActiveScreen("tournament")}
+                  className={`flex flex-col items-center gap-0.5 text-[10px] ${
+                    activeScreen === "tournament" ? "text-amber-400 font-bold" : "text-neutral-400"
+                  }`}
+                >
+                  <Gamepad2 className="w-4 h-4" />
+                  <span>Match</span>
+                </button>
+                <button
+                  onClick={() => setActiveScreen("leaderboard")}
+                  className={`flex flex-col items-center gap-0.5 text-[10px] ${
+                    activeScreen === "leaderboard" ? "text-amber-400 font-bold" : "text-neutral-400"
+                  }`}
+                >
+                  <Trophy className="w-4 h-4" />
+                  <span>Ranks</span>
+                </button>
+                <button
+                  onClick={() => setActiveScreen("wallet")}
+                  className={`flex flex-col items-center gap-0.5 text-[10px] ${
+                    activeScreen === "wallet" ? "text-amber-400 font-bold" : "text-neutral-400"
+                  }`}
+                >
+                  <Wallet className="w-4 h-4" />
+                  <span>Wallet</span>
+                </button>
+                <button
+                  onClick={() => setActiveScreen("profile")}
+                  className={`flex flex-col items-center gap-0.5 text-[10px] ${
+                    activeScreen === "profile" ? "text-amber-400 font-bold" : "text-neutral-400"
+                  }`}
+                >
+                  <User className="w-4 h-4" />
+                  <span>Profile</span>
+                </button>
+              </div>
+            </div>
+          ) : (
+            /* Code View Tab */
+            <div className="w-full h-[600px] bg-neutral-900 rounded-xl overflow-hidden border border-neutral-800 flex flex-col">
+              <div className="p-3 bg-neutral-950 border-b border-neutral-800 flex items-center justify-between text-xs text-neutral-300">
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setCodePlatform("react-native")}
+                    className={`px-3 py-1 rounded font-bold ${
+                      codePlatform === "react-native" ? "bg-amber-500 text-black" : "bg-neutral-800"
+                    }`}
+                  >
+                    React Native (Expo)
+                  </button>
+                  <button
+                    onClick={() => setCodePlatform("flutter")}
+                    className={`px-3 py-1 rounded font-bold ${
+                      codePlatform === "flutter" ? "bg-amber-500 text-black" : "bg-neutral-800"
+                    }`}
+                  >
+                    Flutter (Dart)
+                  </button>
+                </div>
+
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(
+                      codePlatform === "react-native" ? sampleReactNativeCode : sampleFlutterCode
+                    );
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 2000);
+                  }}
+                  className="px-3 py-1 bg-neutral-800 hover:bg-neutral-700 rounded text-neutral-200"
+                >
+                  {copied ? "কপি হয়েছে!" : "কোড কপি"}
+                </button>
+              </div>
+
+              <textarea
+                readOnly
+                value={codePlatform === "react-native" ? sampleReactNativeCode : sampleFlutterCode}
+                className="w-full flex-1 p-4 bg-neutral-900 text-emerald-400 font-mono text-xs focus:outline-none resize-none leading-relaxed"
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Right: Screen Navigator & Prototyping Controls */}
+        <div className="lg:col-span-5 bg-white dark:bg-neutral-900 rounded-2xl p-5 border border-neutral-200 dark:border-neutral-800 shadow-sm space-y-4">
+          <div>
+            <h3 className="font-bold text-sm text-neutral-900 dark:text-neutral-100 flex items-center gap-1.5">
+              <Smartphone className="w-4 h-4 text-amber-500" />
+              <span>৮-স্ক্রিন অ্যাপ আর্কিটেকচার</span>
+            </h3>
+            <p className="text-xs text-neutral-600 dark:text-neutral-400 mt-1">
+              যেকোনো স্ক্রিনে ক্লিক করে লাইভ ফোনে প্রিভিউ ও টেস্ট করুন:
+            </p>
+          </div>
+
+          {/* 8 Screen Switcher Grid */}
+          <div className="grid grid-cols-2 gap-2">
+            {screens.map((screen) => {
+              const Icon = screen.icon;
+              const isActive = activeScreen === screen.id;
+              return (
+                <button
+                  key={screen.id}
+                  onClick={() => {
+                    setActiveScreen(screen.id);
+                    setActiveTab("preview");
+                  }}
+                  className={`p-2.5 rounded-xl border flex items-center gap-2 text-xs font-bold transition-all ${
+                    isActive
+                      ? "bg-amber-50 dark:bg-amber-950/40 border-amber-500 text-amber-700 dark:text-amber-400 shadow-sm"
+                      : "bg-neutral-50 dark:bg-neutral-800/50 border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100"
+                  }`}
+                >
+                  <Icon className="w-4 h-4 text-amber-500" />
+                  <span>{screen.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          <hr className="border-neutral-200 dark:border-neutral-800" />
+
+          {/* Prompt input */}
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-neutral-800 dark:text-neutral-200">
+              নতুন অ্যাপ কনসেপ্ট তৈরি করুন:
             </label>
             <textarea
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
-              rows={3}
-              className="w-full p-2.5 text-xs rounded-xl border border-neutral-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 focus:outline-none resize-none font-['Hind_Siliguri',sans-serif]"
+              rows={2}
+              className="w-full px-3 py-2 text-xs bg-neutral-50 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-xl text-neutral-900 dark:text-neutral-100 focus:ring-1 focus:ring-amber-500 focus:outline-none"
             />
             <button
+              disabled={isGenerating}
               onClick={handleGenerate}
-              disabled={isGenerating || !prompt.trim()}
-              className="w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center justify-center gap-1.5 shadow-xs disabled:opacity-50 cursor-pointer"
+              className="w-full py-2.5 bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs rounded-xl shadow transition-all flex items-center justify-center gap-1.5"
             >
               {isGenerating ? (
                 <>
                   <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                  <span>অ্যাপ তৈরি হচ্ছে...</span>
+                  <span>প্রোটোটাইপ তৈরি হচ্ছে...</span>
                 </>
               ) : (
                 <>
-                  <Play className="w-3.5 h-3.5 fill-current" />
-                  <span>নতুন অ্যাপ তৈরি করুন</span>
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>নতুন অ্যাপ প্রোটোটাইপ বিল্ড করুন</span>
                 </>
               )}
             </button>
           </div>
 
-          <hr className="border-neutral-200" />
-
-          {/* Screen Navigation Selector */}
-          <div className="space-y-2">
-            <label className="text-xs font-bold text-neutral-800 font-['Hind_Siliguri',sans-serif]">
-              অ্যাপের সক্রিয় স্ক্রিন
-            </label>
-            <div className="grid grid-cols-3 gap-2 text-xs">
-              <button
-                onClick={() => setActiveScreen("home")}
-                className={`p-2 rounded-lg border text-center font-medium ${
-                  activeScreen === "home"
-                    ? "bg-emerald-50 border-emerald-500 text-emerald-900"
-                    : "border-neutral-200 text-neutral-600 hover:bg-neutral-50"
-                }`}
-              >
-                ড্যাশবোর্ড
-              </button>
-              <button
-                onClick={() => setActiveScreen("workouts")}
-                className={`p-2 rounded-lg border text-center font-medium ${
-                  activeScreen === "workouts"
-                    ? "bg-emerald-50 border-emerald-500 text-emerald-900"
-                    : "border-neutral-200 text-neutral-600 hover:bg-neutral-50"
-                }`}
-              >
-                রুটিন
-              </button>
-              <button
-                onClick={() => setActiveScreen("profile")}
-                className={`p-2 rounded-lg border text-center font-medium ${
-                  activeScreen === "profile"
-                    ? "bg-emerald-50 border-emerald-500 text-emerald-900"
-                    : "border-neutral-200 text-neutral-600 hover:bg-neutral-50"
-                }`}
-              >
-                প্রোফাইল
-              </button>
-            </div>
-          </div>
-
-          <div className="mt-auto bg-neutral-50 p-3 rounded-xl border border-neutral-200 text-xs text-neutral-600 space-y-1 font-['Hind_Siliguri',sans-serif]">
-            <span className="font-bold text-neutral-900">💡 টিপস:</span>
-            <p>
-              ডানপাশের ফোনে বাটনগুলোতে ক্লিক করে আপনি সরাসরি অ্যাপের সাথে
-              ইন্টারঅ্যাক্ট করতে পারবেন!
-            </p>
-          </div>
-        </div>
-
-        {/* Right Side: Realistic Phone Mockup */}
-        <div className="flex-1 bg-neutral-200 p-4 sm:p-6 flex items-center justify-center overflow-auto">
-          {activeTab === "preview" ? (
-            /* Smartphone Frame */
-            <div className="w-[340px] sm:w-[360px] h-[680px] bg-neutral-950 rounded-[44px] p-3 shadow-2xl border-4 border-neutral-800 ring-1 ring-neutral-700/50 flex flex-col relative select-none">
-              {/* Dynamic Island / Notch */}
-              <div className="absolute top-5 left-1/2 -translate-x-1/2 w-28 h-6 bg-black rounded-full z-20 flex items-center justify-between px-3">
-                <span className="w-2.5 h-2.5 rounded-full bg-neutral-800" />
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              </div>
-
-              {/* Phone Screen Canvas */}
-              <div className="w-full flex-1 bg-slate-900 rounded-[36px] overflow-hidden flex flex-col text-white font-sans text-xs">
-                {/* Status Bar */}
-                <div className="pt-3 px-6 pb-2 flex items-center justify-between text-[11px] text-neutral-400">
-                  <span>০৯:৪১</span>
-                  <div className="flex items-center gap-1.5">
-                    <span>5G</span>
-                    <span>100%</span>
-                  </div>
-                </div>
-
-                {/* Screen Content Container */}
-                <div className="flex-1 overflow-y-auto px-4 py-3 space-y-4">
-                  {activeScreen === "home" && (
-                    <>
-                      {/* User Welcome */}
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="text-[11px] text-neutral-400">
-                            শুভ সকাল
-                          </div>
-                          <div className="text-base font-bold text-white">
-                            তানভীর আহমেদ 👋
-                          </div>
-                        </div>
-                        <div className="w-9 h-9 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold border border-emerald-500/40">
-                          TA
-                        </div>
-                      </div>
-
-                      {/* Main Metric: Steps */}
-                      <div className="bg-gradient-to-br from-emerald-600 to-teal-700 rounded-2xl p-4 text-white shadow-lg space-y-2">
-                        <div className="flex items-center justify-between text-[11px] opacity-90">
-                          <span>আজকের স্টেপ লক্ষ্য</span>
-                          <span className="bg-white/20 px-2 py-0.5 rounded-full font-semibold">
-                            ৭৪% সম্পন্ন
-                          </span>
-                        </div>
-                        <div className="text-2xl font-extrabold tracking-tight">
-                          ৭,৪২০ <span className="text-xs font-normal">/ ১০,০০০ কদম</span>
-                        </div>
-                        <div className="w-full bg-black/20 h-2 rounded-full overflow-hidden">
-                          <div className="bg-white h-full w-[74%] rounded-full" />
-                        </div>
-                      </div>
-
-                      {/* Health Grid */}
-                      <div className="grid grid-cols-2 gap-2.5">
-                        <div className="bg-slate-800/80 p-3 rounded-xl border border-slate-700 space-y-1">
-                          <div className="flex items-center gap-1 text-rose-400 text-[10px]">
-                            <Heart className="w-3.5 h-3.5" />
-                            <span>হার্টরেট</span>
-                          </div>
-                          <div className="text-lg font-bold">৭৮ BPM</div>
-                          <div className="text-[10px] text-slate-400">স্বাভাবিক ছন্দ</div>
-                        </div>
-                        <div className="bg-slate-800/80 p-3 rounded-xl border border-slate-700 space-y-1">
-                          <div className="flex items-center gap-1 text-amber-400 text-[10px]">
-                            <Flame className="w-3.5 h-3.5" />
-                            <span>ক্যালোরি বার্ন</span>
-                          </div>
-                          <div className="text-lg font-bold">৫২০ Kcal</div>
-                          <div className="text-[10px] text-slate-400">লক্ষ্য: ৬০০ Kcal</div>
-                        </div>
-                      </div>
-
-                      {/* Interactive Water Tracker */}
-                      <div className="bg-slate-800/80 p-3.5 rounded-xl border border-slate-700 space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="font-semibold text-sky-400">
-                            💧 পানি পান ট্র্যাকার
-                          </span>
-                          <span className="text-xs font-bold text-white">
-                            {waterGlasses} / ৮ গ্লাস
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          {Array.from({ length: 8 }).map((_, i) => (
-                            <div
-                              key={i}
-                              onClick={() => setWaterGlasses(i + 1)}
-                              className={`flex-1 h-6 rounded-md cursor-pointer transition-colors ${
-                                i < waterGlasses
-                                  ? "bg-sky-500 shadow-xs"
-                                  : "bg-slate-700"
-                              }`}
-                            />
-                          ))}
-                        </div>
-                        <button
-                          onClick={() => setWaterGlasses((c) => Math.min(c + 1, 8))}
-                          className="w-full py-1.5 bg-sky-600 hover:bg-sky-500 rounded-lg font-medium text-[11px] transition-colors"
-                        >
-                          + ১ গ্লাস যোগ করুন
-                        </button>
-                      </div>
-                    </>
-                  )}
-
-                  {activeScreen === "workouts" && (
-                    <div className="space-y-3">
-                      <div className="font-bold text-sm text-white">
-                        আজকের ওয়ার্কআউট প্ল্যান
-                      </div>
-                      {[
-                        { id: "1", title: "সকালের ওয়ার্মআপ ও স্ট্রেচিং", time: "১৫ মিনিট", cal: "৮০ Kcal" },
-                        { id: "2", title: "হালকা জগিং ও কার্ডিও", time: "২০ মিনিট", cal: "১৮০ Kcal" },
-                        { id: "3", title: "কোর ও অ্যাবস এক্সারসাইজ", time: "১৫ মিনিট", cal: "১২০ Kcal" },
-                      ].map((item) => (
-                        <div
-                          key={item.id}
-                          onClick={() =>
-                            setWorkoutChecked((prev) => ({
-                              ...prev,
-                              [item.id]: !prev[item.id],
-                            }))
-                          }
-                          className="p-3 bg-slate-800/80 rounded-xl border border-slate-700 flex items-center justify-between cursor-pointer"
-                        >
-                          <div>
-                            <div
-                              className={`font-semibold ${
-                                workoutChecked[item.id]
-                                  ? "line-through text-slate-400"
-                                  : "text-white"
-                              }`}
-                            >
-                              {item.title}
-                            </div>
-                            <div className="text-[10px] text-slate-400">
-                              {item.time} • {item.cal}
-                            </div>
-                          </div>
-                          <div
-                            className={`w-5 h-5 rounded-md flex items-center justify-center border ${
-                              workoutChecked[item.id]
-                                ? "bg-emerald-500 border-emerald-500 text-white"
-                                : "border-slate-600"
-                            }`}
-                          >
-                            {workoutChecked[item.id] && <Check className="w-3.5 h-3.5" />}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {activeScreen === "profile" && (
-                    <div className="space-y-4 text-center py-4">
-                      <div className="w-16 h-16 rounded-full bg-emerald-600 text-white text-xl font-bold flex items-center justify-center mx-auto ring-4 ring-slate-800">
-                        TA
-                      </div>
-                      <div>
-                        <div className="text-base font-bold text-white">তানভীর আহমেদ</div>
-                        <div className="text-xs text-slate-400">ঢাকা, বাংলাদেশ • প্রো মেম্বার</div>
-                      </div>
-                      <div className="bg-slate-800 p-3 rounded-xl border border-slate-700 text-left space-y-2 text-xs">
-                        <div className="flex justify-between">
-                          <span className="text-slate-400">উচ্চতা:</span>
-                          <span className="font-semibold text-white">৫ ফুট ১০ ইঞ্চি</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-400">ওজন:</span>
-                          <span className="font-semibold text-white">৬৮ কেজি</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-400">স্ট্রিক:</span>
-                          <span className="font-semibold text-amber-400">🔥 ১২ দিন একটানা</span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Bottom Navigation Bar */}
-                <div className="bg-slate-950/80 border-t border-slate-800 px-6 py-2.5 flex items-center justify-between text-neutral-400">
-                  <button
-                    onClick={() => setActiveScreen("home")}
-                    className={`flex flex-col items-center gap-0.5 ${
-                      activeScreen === "home" ? "text-emerald-400 font-bold" : "hover:text-white"
-                    }`}
-                  >
-                    <Home className="w-4 h-4" />
-                    <span className="text-[10px]">হোম</span>
-                  </button>
-                  <button
-                    onClick={() => setActiveScreen("workouts")}
-                    className={`flex flex-col items-center gap-0.5 ${
-                      activeScreen === "workouts" ? "text-emerald-400 font-bold" : "hover:text-white"
-                    }`}
-                  >
-                    <Calendar className="w-4 h-4" />
-                    <span className="text-[10px]">রুটিন</span>
-                  </button>
-                  <button
-                    onClick={() => setActiveScreen("profile")}
-                    className={`flex flex-col items-center gap-0.5 ${
-                      activeScreen === "profile" ? "text-emerald-400 font-bold" : "hover:text-white"
-                    }`}
-                  >
-                    <User className="w-4 h-4" />
-                    <span className="text-[10px]">প্রোফাইল</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="w-full h-full max-w-4xl bg-neutral-900 rounded-xl overflow-hidden shadow-lg border border-neutral-800 flex flex-col">
-              <div className="bg-neutral-950 px-4 py-2 border-b border-neutral-800 flex items-center justify-between text-xs text-neutral-400">
-                <div className="flex items-center gap-2 font-mono">
-                  <Code2 className="w-4 h-4 text-emerald-400" />
-                  <span>FitnessApp.tsx (React Native / Expo)</span>
-                </div>
-                <button
-                  onClick={handleCopy}
-                  className="px-2 py-1 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 rounded text-[11px]"
-                >
-                  {copied ? "কপি হয়েছে!" : "কপি কোড"}
-                </button>
-              </div>
-              <textarea
-                value={sampleReactCode}
-                readOnly
-                className="w-full flex-1 p-4 bg-neutral-900 text-emerald-400 font-mono text-xs focus:outline-none resize-none overflow-auto leading-relaxed"
-              />
-            </div>
-          )}
+          {/* Export button */}
+          <button
+            onClick={() => alert("সম্পূর্ণ মোবাইল অ্যাপ প্রজেক্ট ও স্পেসিফিকেশন ফাইল এক্সপোর্ট হয়েছে!")}
+            className="w-full py-2 border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-xs font-bold text-neutral-700 dark:text-neutral-300 rounded-xl transition-colors flex items-center justify-center gap-1.5"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>প্রজেক্ট এক্সপোর্ট করুন (ZIP / Spec)</span>
+          </button>
         </div>
       </div>
     </div>

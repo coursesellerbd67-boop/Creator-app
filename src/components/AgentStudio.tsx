@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Workflow,
   Sparkles,
   Play,
   CheckCircle2,
@@ -15,6 +14,15 @@ import {
   Video,
   FileText,
   Share2,
+  Layers,
+  ArrowRight,
+  ExternalLink,
+  Cpu,
+  RefreshCw,
+  Image as ImageIcon,
+  Tag,
+  Subtitles,
+  Zap,
 } from "lucide-react";
 import { AgentStep, StudioType } from "../types";
 
@@ -31,140 +39,193 @@ export const AgentStudio: React.FC<AgentStudioProps> = ({
 }) => {
   const [goal, setGoal] = useState(
     initialPrompt ||
-      "একটি ইসলামিক ও লাইফস্টাইল YouTube চ্যানেলের জন্য ১০টি আকর্ষণীয় ভিডিওর কমপ্লিট প্যাকেজ তৈরি করো (রিসার্চ, স্ক্রিপ্ট, ভয়েস, থাম্বনেইল ও এসইও সহ)।"
+      "একটা 60-second YouTube ভিডিও তৈরি করো—script, image prompt, voiceover, subtitle, thumbnail আর SEO সহ।"
   );
   const [isRunning, setIsRunning] = useState(false);
   const [activeStepIndex, setActiveStepIndex] = useState<number>(-1);
   const [copiedStepId, setCopiedStepId] = useState<string | null>(null);
   const [expandedStepId, setExpandedStepId] = useState<string | null>("step-3");
+  const [generatingVoiceStepId, setGeneratingVoiceStepId] = useState<string | null>(null);
+  const [activeAudioUrl, setActiveAudioUrl] = useState<string | null>(null);
 
   const defaultSteps: AgentStep[] = [
     {
       id: "step-1",
-      title: "Task Breakdown & Strategy",
-      titleBn: "১. টাস্ক প্ল্যানিং ও লক্ষ্য নির্ধারণ",
+      title: "1. Planning & Strategic Roadmap",
+      titleBn: "১. প্ল্যানিং ও কনটেন্ট স্ট্র্যাটেজি",
       status: "completed",
-      actionType: "research",
-      output: `### লক্ষ্য: ১০টি হাই-কনভার্টিং ভিডিও তৈরি
-- **টার্গেট অডিয়েন্স:** ১৮-৩৫ বছর বয়সী বাংলা ভাষাভাষী দর্শক
-- **ক্যাটাগরি:** মোটিভেশনাল, আত্মোন্নয়ন ও ইসলামিক দৃষ্টিভঙ্গি
-- **ভিডিও ফরম্যাট:** ৫-৮ মিনিটের লং ভিডিও + ৬০ সেকেন্ডের ৩টি করে শর্টস
-- **টোন:** শান্ত, বলিষ্ঠ, অনুপ্রেরণাদায়ক ও তথ্যবহুল`,
+      actionType: "planning",
+      output: `### টাস্ক প্ল্যান ও স্ট্র্যাটেজিক ফ্রেমওয়ার্ক:
+- **ফরম্যাট:** ৬০ সেকেন্ড হাই-এনার্জি ভার্টিকাল শর্ট / রিল (9:16) অথবা ল্যান্ডস্কেপ (16:9)
+- **উদ্দেশ্য:** প্রথম ৩ সেকেন্ডেই ভিউয়ার ধরে রাখা (Retention Hook) এবং ফুল ওয়াচটাইম অর্জন
+- **প্যাসিং:** ৬০ সেকেন্ডে মোট ১৫০-১৭০ শব্দ, প্রতি ৫-৭ সেকেন্ডে ভিজ্যুয়াল কাট
+- **অডিয়েন্স মনস্তত্ত্ব:** কৌতূহল উদ্দীপনা → নতুন তথ্য প্রদান → সহজ সমাধান → সরাসরি অ্যাকশন`,
     },
     {
       id: "step-2",
-      title: "Market & Keyword Research",
-      titleBn: "২. বিষয় গবেষণা ও অডিয়েন্স ইন্টারেস্ট",
+      title: "2. Deep Research & Audience Insights",
+      titleBn: "২. ডিপ রিসার্চ ও কিওয়ার্ড বিশ্লেষণ",
       status: "completed",
       actionType: "research",
-      output: `### টপ সার্চ ভলিউম ও ট্রেন্ডিং বিষয়সমূহ:
-1. "মানসিক শান্তি অর্জনের উপায়" (Search Vol: 120k/mo)
-2. "সকালের রুটিন ও বারাকা" (Search Vol: 85k/mo)
-3. "রাগ নিয়ন্ত্রণের কার্যকর কৌশল" (Search Vol: 95k/mo)
-4. "ডিপ্রেশন ও একাকীত্ব থেকে মুক্তির উপায়" (Search Vol: 150k/mo)
-5. "সাফল্য ও নিয়তের শুদ্ধতা" (Search Vol: 60k/mo)`,
+      output: `### মার্কেট গবেষণা ও ট্রেন্ডিং ইনসাইটস:
+1. **টপ সার্চ ভলিউম:** "সকালে ৫ মিনিটে মন শান্ত করার উপায়" (Search Vol: 95k/mo)
+2. **ভাইরাল কনসেপ্ট:** ডোপামিন ডিটক্স ও মর্নিং ফোকাস ফর্মুলা
+3. **প্রতিদ্বন্দ্বী ভিডিও দুর্বলতা:** অধিকাংশ ভিডিও বেশি দীর্ঘ ও একঘেয়ে; আমাদের দরকার দ্রুতগতির বুলেট পয়েন্ট
+4. **অডিয়েন্স ড্রাইভ:** ১৮-৩২ বছর বয়সী শিক্ষার্থী ও তরুণ কর্মজীবী যাদের মনোযোগ দ্রুত ছুটে যায়`,
     },
     {
       id: "step-3",
-      title: "10 Video Concepts & Viral Hooks",
-      titleBn: "৩. ১০টি ভিডিওর আইডিয়া ও ভাইরাল হুক",
+      title: "3. Master Script & Retention Hooks",
+      titleBn: "৩. ৬০-সেকেন্ড পূর্ণাঙ্গ স্ক্রিপ্ট (হুক, বডি ও সিটিএ)",
       status: "completed",
       actionType: "script",
-      output: `### ১০টি ভিডিওর তালিকা:
-1. **ভিডিও ১:** "প্রতিদিন সকালে এই ৩টি ভুল আপনার সারাদিনের বারাকা কেড়ে নিচ্ছে!"
-   - *হুক:* "আপনি কি জানেন, সকালের প্রথম ১৫ মিনিট ঠিক করে আপনার আগামী ১৫ বছর কেমন যাবে?"
-2. **ভিডিও ২:** "অতিরিক্ত দুশ্চিন্তা ও ওভারথিঙ্কিং থামানোর ইসলামিক ও সাইকোলজিক্যাল উপায়"
-3. **ভিডিও ৩:** "যে ৫টি অভ্যাস একজন মানুষকে ভেতর থেকে অটুট ও অপরাজেয় করে তোলে"
-4. **ভিডিও ৪:** "রিযিক বৃদ্ধির গোপন রহস্য: যা ধনী মানুষেরা মেনে চলে"
-5. **ভিডিও ৫:** "মানুষের কথায় কষ্ট পাওয়া বন্ধ করবেন যেভাবে"
-6. **ভিডিও ৬:** "কঠিন সময়ে কীভাবে নিজের বিশ্বাস ও আশা ধরে রাখবেন?"
-7. **ভিডিও ৭:** "অলস্য ও কাজের দীর্ঘসূত্রিতা কাটানোর ৩ সেকেন্ডের ফর্মুলা"
-8. **ভিডিও ৮:** "আত্মবিশ্বাস বাড়ানোর ৫টি পরীক্ষিত ধাপ"
-9. **ভিডিও ৯:** "যে দোয়া ও আমল মানুষের অন্তরের শূন্যতা দূর করে দেয়"
-10. **ভিডিও ১০:** "মৃত্যুর কথা স্মরণ কীভাবে আমাদের জীবনকে অর্থপূর্ণ করে?"`,
+      output: `### ৬০-সেকেন্ড পূর্ণাঙ্গ স্ক্রিপ্ট:
+**[0:00 - 0:05 | হুক]**
+"আপনি কি জানেন—ঘুম থেকে ওঠার প্রথম ১০ মিনিটে আপনার মস্তিষ্কের সাথে কী ঘটে?"
+
+**[0:05 - 0:20 | সমস্যা]**
+"যখনই আপনি ঘুম ভেঙে ফোন স্ক্রল করেন, মস্তিষ্কে কর্টিসল এবং ডোপামিনের এক ক্ষতিকর ঝড় শুরু হয়। যার ফলে সারাদিন আপনি ক্লান্ত ও বিভ্রান্ত বোধ করেন।"
+
+**[0:20 - 0:45 | ৩ সেকেন্ড ফর্মুলা সমাধান]**
+"আজ থেকে শুধু ৩টি সহজ নিয়ম মেনে চলুন:
+১. চোখ খুলে এক গ্লাস ঠান্ডা পানি পান করুন।
+২. প্রথম ২০ মিনিট কোনো স্ক্রিনের দিকে তাকাবেন না।
+৩. জানালার সামনে গিয়ে ৩ বার গভীর নিশ্বাস নিন।"
+
+**[0:45 - 1:00 | কনক্লুশন ও কল টু অ্যাকশন]**
+"এই ছোট্ট পরিবর্তনটি আপনার প্রোডাক্টিভিটি বাড়িয়ে দেবে ২০০%! নিজের ওপর পরীক্ষা করে দেখুন এবং বন্ধুদের সাথে শেয়ার করে তাদেরও দিনটি সুন্দর করতে সাহায্য করুন।"`,
     },
     {
       id: "step-4",
-      title: "Detailed Production Scripts",
-      titleBn: "৪. মাস্টার স্ক্রিপ্ট (ভিডিও ১ ও ২)",
+      title: "4. Cinematic Image & Scene Prompts",
+      titleBn: "৪. সিনেমাটিক ইমেজ ও সিন প্রম্পটস",
       status: "completed",
-      actionType: "script",
-      output: `### ভিডিও ১: পূর্ণাঙ্গ ভয়েসওভার স্ক্রিপ্ট
-**[হুক - প্রথম ১০ সেকেন্ড]**
-"প্রতিদিন সকালে ঘুম থেকে উঠে আপনি সবার আগে কী করেন? মুঠোফোনে সোশ্যাল মিডিয়া স্ক্রল? যদি উত্তর হ্যাঁ হয়, তবে জেনে রাখুন—নিজের অজান্তেই আপনি দিনের শুরুতেই মনের শান্তি নষ্ট করছেন।"
-
-**[মূল বক্তব্য - ২য় মিনিট]**
-"ইসলাম ও আধুনিক বিজ্ঞান উভয়েই বলে—সকালের সময়টুকু হলো সবচেয়ে মূল্যবান বরকতের সময়। আল্লাহর রাসুল (সা.) দোয়া করেছিলেন: 'হে আল্লাহ! আমার উম্মতের জন্য সকালের সময়ে বরকত দান করুন।' যখন আপনি অলসতা ত্যাগ করে দিনের প্রথম ভাগে সৃষ্টিশীল কোনো কাজে মনোযোগ দেন, আপনার নিউরোট্রান্সমিটারগুলো ইতিবাচক শক্তিতে ভরে ওঠে।"
-
-**[কল টু অ্যাকশন (CTA)]**
-"আজ থেকেই এই অভ্যাস পরিবর্তন করার সংকল্প নিন। ভিডিওটি ভালো লাগলে লাইক দিন এবং প্রিয়জনকে শেয়ার করে বরকত ভাগ করে নিন।"`,
+      actionType: "image",
+      output: `### সিন বাই সিন ভিজ্যুয়াল প্রম্পটস (Midjourney / Imagen):
+1. **শট ১ (০-৫ সে.):** "Cinematic close up of glowing smartphone alarm in dark bedroom, blue light illuminating tired face, shallow depth of field, 8k, moody atmosphere."
+2. **শট ২ (৫-২০ সে.):** "Abstract glowing neural network firing chaotic electrical pulses inside brain silhouette, vibrant red and neon blue hues, volumetric lighting."
+3. **শট ৩ (২০-৪৫ সে.):** "Serene morning sunlight rays breaking through wooden window, water droplets on glass, peaceful aesthetic, warm golden hour tones, photorealistic."
+4. **শট ৪ (৪৫-৬০ সে.):** "Energetic person walking confidently toward sunlight, smiling with clarity, cinematic depth, inspirational composition."`,
     },
     {
       id: "step-5",
-      title: "AI Image & Thumbnail Prompts",
-      titleBn: "৫. থাম্বনেইল প্রম্পট ও ভিজ্যুয়াল গাইড",
+      title: "5. Voiceover Audio Script & Directives",
+      titleBn: "৫. ভয়েসওভার অডিও স্ক্রিপ্ট ও নির্দেশনা",
       status: "completed",
-      actionType: "image",
-      output: `### ফটো ও থাম্বনেইল জেনারেশন প্রম্পট:
-1. **থাম্বনেইল ১:** "Ultra-realistic cinematic 8k close-up shot of a thoughtful young South Asian man looking at golden morning sunlight streaming through a window, serene expression, dramatic lighting, high contrast, golden hour glow."
-   - **থাম্বনেইল টেক্সট:** "সকালের ৩টি মারাত্মক ভুল!" (হলুদ ও সাদা বোল্ড বাংলা ফন্ট)
-2. **থাম্বনেইল ২:** "A glowing illuminated hourglass floating over calm ocean at twilight, mystical atmosphere, 3D volumetric light, 4K resolution."
-   - **থাম্বনেইল টেক্সট:** "দুশ্চিন্তা বন্ধের উপায়!"`,
+      actionType: "voice",
+      output: `### ভয়েসওভার প্যারামিটার:
+- **প্রস্তাবিত ভয়েস:** Fenrir (গম্ভীর ও আত্মবিশ্বাসী) অথবা Kore (শান্ত ও স্পষ্ট)
+- **টোন:** ভাবগম্ভীর, ধীরস্থির ও আকর্ষণীয় (Engaging & Authoritative)
+- **স্পিড:** 1.0x স্বাভাবিক গতি
+- **মিউজিক বেড:** সফট অ্যাম্বিয়েন্ট সিন্থ ও সাব-বাস যা কথাকে প্রাধান্য দেবে`,
     },
     {
       id: "step-6",
-      title: "Voiceover Directives & Audio Script",
-      titleBn: "৬. ভয়েসওভার টোন ও অডিও নির্দেশনা",
+      title: "6. Video Storyboard & Timeline Cues",
+      titleBn: "৬. ভিডিও স্টোরিবোর্ড ও এডিটিং কিউস",
       status: "completed",
-      actionType: "voice",
-      output: `### অডিও নির্দেশনা:
-- **নির্বাচিত ভয়েস:** Fenrir / কোরি (শান্ত ও গম্ভীর)
-- **টোন:** ভাবগম্ভীর, ধীরস্থির ও অনুপ্রেরণাদায়ক (Reflective & Inspiring)
-- **স্পিড:** 0.95x (একটু ধীর ও স্পষ্ট উচ্চারণ)
-- **ব্যাকগ্রাউন্ড স্কোর:** লো-ভলিউম সফট অ্যাম্বিয়েন্ট পিয়ানো ও প্যাড`,
+      actionType: "video",
+      output: `### ভিডিও টাইমলাইন গাইড:
+- **০:০০ - ০:০৫:** ফাস্ট জুম-ইন শট + টেক্সট পপ-আপ অ্যানিমেশন ("১০ মিনিটের ভুল!")
+- **০:০৫ - ০:২০:** রেড ওভারলে গ্লিচ এফেক্ট এবং লো-ফ্রিকোয়েন্সি থাড সাউন্ড এফেক্ট
+- **০:২০ - ০:৪৫:** ক্লিন ট্রানজিশন, স্ক্রিনে ১, ২, ৩ নম্বর পয়েন্ট কার্ড স্লাইড-ইন
+- **০:৪৫ - ১:০০:** ব্যাকগ্রাউন্ড মিউজিক ক্রেসেন্ডো + সাবস্ক্রাইব বাটন অ্যানিমেশন`,
     },
     {
       id: "step-7",
-      title: "Video Storyboard & B-Roll Shots",
-      titleBn: "৭. ভিডিও স্টোরিবোর্ড ও বি-রোল শট লিস্ট",
+      title: "7. Timecoded Subtitles (SRT)",
+      titleBn: "৭. টাইমকোডেড সাবটাইটেল ট্র্যাক (SRT)",
       status: "completed",
-      actionType: "video",
-      output: `### ভিডিও ১ এর শট লিস্ট:
-- **০:০০ - ০:০৮:** একজন মানুষের বিছানায় শুয়ে স্মার্টফোন স্ক্রল করার স্লো মোশন শট (শ্যাডোড লাইটিং)।
-- **০:০৮ - ০:২০:** দ্রুত ঘড়ির কাঁটা ঘোরার সিনেমাটিক ম্যাক্রো শট।
-- **০:২০ - ১:১০:** ভোরের শান্ত প্রকৃতি, কুয়াশাচ্ছন্ন সবুজ মাঠ এবং সূর্যের কিরণ পড়ার দৃশ্য।
-- **১:১০ - ২:৩০:** ক্যালিগ্রাফি স্টাইলে স্ক্রিনে মূল পয়েন্টগুলোর ড্রপ-ইন অ্যানিমেশন।`,
+      actionType: "subtitle",
+      output: `### টাইমকোডেড সাবটাইটেল (SRT ফরম্যাট):
+1
+00:00:00,000 --> 00:00:05,200
+ঘুম থেকে ওঠার প্রথম ১০ মিনিটে আপনার মস্তিষ্কে কী ঘটে?
+
+2
+00:00:05,200 --> 00:00:12,500
+ঘুম ভেঙে ফোন স্ক্রল করলে কর্টিসল ও ডোপামিনের ক্ষতিকর ঝড় শুরু হয়।
+
+3
+00:00:12,500 --> 00:00:20,800
+যার কারণে সারাদিন আপনি ক্লান্ত ও বিভ্রান্ত বোধ করেন।
+
+4
+00:00:20,800 --> 00:00:35,000
+আজ থেকেই মেনে চলুন এই ৩টি সহজ সোনালী নিয়ম!
+
+5
+00:00:35,000 --> 00:00:48,000
+১. ঠান্ডা পানি পান করুন | ২. স্ক্রিন এড়িয়ে চলুন | ৩. মুক্ত বাতাসে নিশ্বাস নিন
+
+6
+00:00:48,000 --> 00:01:00,000
+এই ছোট্ট পরিবর্তন বাড়িয়ে দেবে ২০০% প্রোডাক্টিভিটি! শেয়ার করুন প্রিয়জনের সাথে।`,
     },
     {
       id: "step-8",
-      title: "YouTube SEO, Tags & Meta",
-      titleBn: "৮. হাই-র‍্যাংকিং এসইও টাইটেল ও ট্যাগ",
+      title: "8. High-CTR Thumbnail Concepts",
+      titleBn: "৮. হাই-সিটিআর থাম্বনেইল কনসেপ্ট ও গ্রাফিক্স",
       status: "completed",
-      actionType: "seo",
-      output: `### এসইও মেটাডাটা:
-- **প্রস্তাবিত টাইটেল:** প্রতিদিন সকালে এই ৩টি ভুল করছেন না তো? | Morning Habits for Success & Peace
-- **ডেসক্রিপশন:**
-  "সকালের বরকত ও মানসিক শান্তি নিয়ে বিস্তারিত আলোচনা। জেনে নিন কোন ভুলগুলো আমাদের দৈনন্দিন প্রোডাক্টিভিটি ধ্বংস করে দেয়।"
-- **হাই-র‍্যাংক ট্যাগস:**
-  \`#BanglaMotivation, #MorningRoutine, #IslamicReminders, #SelfImprovement, #MentalPeace, #ProductivityHacks\``,
+      actionType: "thumbnail",
+      output: `### ৩টি হাই-সিটিআর থাম্বনেইল আইডিয়া:
+- **অপশন ১ (শক ভ্যালু):**
+  - ভিজ্যুয়াল: বড় লাল ক্রস সাইন ও চিন্তিত মুখের এক্সপ্রেশন
+  - টেক্সট: "সকালে এই ভুল কখনোই নয়!" (বোল্ড হলুদ ফন্ট, কালো ড্রপ শ্যাডো)
+- **অপশন ২ (ট্রান্সফর্মেশন):**
+  - ভিজ্যুয়াল: দুইভাগে বিভক্ত স্প্লিট স্ক্রিন (ক্লান্ত সকাল vs প্রাণবন্ত দিন)
+  - টেক্সট: "১টি অভ্যাস = পুরো দিন জয়!"
+- **অপশন ৩ (কৌতূহল):**
+  - ভিজ্যুয়াল: বড় ডিজিটাল ঘড়িতে 06:00 AM জ্বলজ্বল করছে
+  - টেক্সট: "প্রথম ১০ মিনিটের জাদু!"`,
     },
     {
       id: "step-9",
-      title: "Final Master Project Package",
-      titleBn: "৯. চূড়ান্ত প্রজেক্ট প্যাকেজ ও রিলিজ শিডিউল",
+      title: "9. YouTube SEO, Tags & Hashtags",
+      titleBn: "৯. ইউটিউব এসইও টাইটেল, ডেসক্রিপশন ও ট্যাগস",
+      status: "completed",
+      actionType: "seo",
+      output: `### এসইও প্যাকেজ:
+- **টাইটেল ১:** সকালে এই ৩টি ভুল করছেন না তো? | 60-Second Life Changing Habits
+- **টাইটেল ২:** ঘুম থেকে উঠে ভুলেও এই কাজটি করবেন না! | Morning Routine Bangla
+- **ডেসক্রিপশন:**
+  সকালে ঘুম থেকে ওঠার পর মস্তিষ্কের কার্যক্ষমতা বজায় রাখতে কোন ভুলগুলো এড়িয়ে চলা উচিত? এই ৬০ সেকেন্ডের ভিডিওতে জানুন ৩টি বৈজ্ঞানিক নিয়ম।
+- **ট্যাগস:**
+  \`#BanglaShorts, #MorningRoutine, #ProductivityHacks, #SelfImprovement, #HealthTipsBangla, #DopamineDetox, #BanglaMotivation\``,
+    },
+    {
+      id: "step-10",
+      title: "10. Final Master Delivery Package",
+      titleBn: "১০. চূড়ান্ত মাস্টার প্যাকেজ ও ওয়ান-ক্লিক এক্সপোর্ট",
       status: "completed",
       actionType: "final",
-      output: `### রিলিজ শিডিউল ও এক্সিকিউশন প্ল্যান:
-- **সপ্তাহ ১:** ভিডিও ১ ও ভিডিও ২ রিলিজ + প্রতিটিতে ২টি শর্টস
-- **সপ্তাহ ২:** ভিডিও ৩ ও ভিডিও ৪ রিলিজ
-- **সপ্তাহ ৩:** ভিডিও ৫ ও ভিডিও ৬ রিলিজ
-- **সপ্তাহ ৪:** ভিডিও ৭, ৮, ৯ এবং ১০ রিলিজ
-
-★ সমস্ত স্ক্রিপ্ট, থাম্বনেইল প্রম্পট এবং এসইও ট্যাগ রেডি! নিচে থেকে ফুল প্রজেক্ট ফাইল ডাউনলোড করতে পারেন।`,
+      output: `### ডেলিভারি কমপ্লিট!
+★ পুরো ভিডিও প্রোডাকশন প্যাকেজটি প্রস্তুত।
+- স্ক্রিপ্ট, সাবটাইটেল, ইমেজ প্রম্পট এবং এসইও ট্যাগ এক ক্লিকে ডাউনলোড করতে নিচে 'ডাউনলোড সম্পূর্ণ প্যাকেজ' বাটনে ক্লিক করুন।
+- সরাসরি এডিটর দেখতে 'ভিডিও স্টুডিওতে পাঠান' বা 'ভয়েস সিন্থেসিস' বাটন ব্যবহার করুন।`,
     },
   ];
 
   const [steps, setSteps] = useState<AgentStep[]>(defaultSteps);
+
+  const goalPresets = [
+    {
+      title: "৬০-সেকেন্ড YouTube শর্টস",
+      text: "একটা 60-second YouTube ভিডিও তৈরি করো—script, image prompt, voiceover, subtitle, thumbnail আর SEO সহ।",
+    },
+    {
+      title: "ইসলামিক ভিডিও প্যাকেজ",
+      text: "একটি ইসলামিক মোটিভেশনাল চ্যানেলের জন্য পূর্ণাঙ্গ ভিডিও তৈরি করো: আত্মিক প্রশান্তি ও সকালের বরকত নিয়ে script, image, voiceover ও SEO সহ।",
+    },
+    {
+      title: "টেক প্রোডাক্ট লঞ্চ ভিডিও",
+      text: "একটি নতুন এআই মোবাইল অ্যাপ লঞ্চের জন্য ৬০ সেকেন্ডের হাইপ ভিডিও স্ক্রিপ্ট, স্টোরিবোর্ড, ভয়েসওভার ও থাম্বনেইল তৈরি করো।",
+    },
+    {
+      title: "ই-কমার্স ক্যাম্পেইন প্যাকেজ",
+      text: "ঈদ কালেকশনের ফ্যাশন ব্রান্ডের জন্য একটি কনভার্সন-ফোকাসড রিল ভিডিও প্যাকেজ তৈরি করো (স্ক্রিপ্ট, বি-রোল, ভয়েস ও প্রমোশনাল অফার)।",
+    },
+  ];
 
   const runAutonomousAgent = async () => {
     if (!goal.trim()) return;
@@ -179,7 +240,6 @@ export const AgentStudio: React.FC<AgentStudioProps> = ({
     setActiveStepIndex(0);
 
     try {
-      // Step-by-step sequential AI agent execution simulation / generation
       for (let i = 0; i < steps.length; i++) {
         setActiveStepIndex(i);
         setSteps((prev) =>
@@ -189,16 +249,17 @@ export const AgentStudio: React.FC<AgentStudioProps> = ({
           }))
         );
 
-        // Fetch intelligent output from /api/generate for the goal and current step
         const currentStep = steps[i];
         const res = await fetch("/api/generate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            prompt: `You are an Autonomous AI Project Agent executing Step ${i + 1} of 9: "${currentStep.title} (${currentStep.titleBn})" for this user project goal:
+            type: "agent_step",
+            prompt: `You are the STUDIO X Super Agent executing Step ${i + 1} of 10: "${currentStep.title} (${currentStep.titleBn})" for the user's project goal:
 "${goal}"
 
-Please output thorough, professional, actionable results in Bengali (বাংলা) formatted with Markdown headers and bullet points.`,
+Output exceptionally detailed, production-ready, beautifully formatted Markdown in Bengali (বাংলা).
+Include exact scripts, timing, visual prompts, timecoded subtitles, or SEO tags according to the step.`,
           }),
         });
 
@@ -206,25 +267,48 @@ Please output thorough, professional, actionable results in Bengali (বাং�
         if (data.success && data.text) {
           setSteps((prev) =>
             prev.map((step, idx) =>
-              idx === i
-                ? { ...step, status: "completed", output: data.text }
-                : step
+              idx === i ? { ...step, status: "completed", output: data.text } : step
             )
           );
         } else {
-          // Keep current fallback output
           setSteps((prev) =>
-            prev.map((step, idx) =>
-              idx === i ? { ...step, status: "completed" } : step
-            )
+            prev.map((step, idx) => (idx === i ? { ...step, status: "completed" } : step))
           );
         }
       }
     } catch (err) {
-      console.error("Agent execution error:", err);
+      console.error("Super Agent execution error:", err);
     } finally {
       setIsRunning(false);
       setActiveStepIndex(-1);
+    }
+  };
+
+  const handleGenerateVoiceForStep = async (stepId: string, textToSpeak: string) => {
+    try {
+      setGeneratingVoiceStepId(stepId);
+      const res = await fetch("/api/tts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text: textToSpeak.slice(0, 400),
+          voiceName: "Fenrir",
+        }),
+      });
+      const data = await res.json();
+      if (data.success && data.audioBase64) {
+        const audioUrl = `data:audio/wav;base64,${data.audioBase64}`;
+        setActiveAudioUrl(audioUrl);
+        const audio = new Audio(audioUrl);
+        audio.play();
+        setSteps((prev) =>
+          prev.map((s) => (s.id === stepId ? { ...s, audioBase64: data.audioBase64 } : s))
+        );
+      }
+    } catch (e) {
+      console.error("Failed to generate voice:", e);
+    } finally {
+      setGeneratingVoiceStepId(null);
     }
   };
 
@@ -244,35 +328,35 @@ Please output thorough, professional, actionable results in Bengali (বাং�
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `ai-agent-package-${Date.now()}.md`;
+    a.download = `studio-x-super-agent-package-${Date.now()}.md`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    URL.revokeObjectURL(url);
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8 space-y-8">
-      {/* Top Banner */}
-      <div className="bg-gradient-to-r from-amber-500 via-amber-600 to-orange-600 rounded-2xl p-6 text-white shadow-md">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/20 text-white text-xs font-semibold backdrop-blur-xs">
-              <Workflow className="w-3.5 h-3.5" />
-              <span>অটোনোমাস মাল্টি-স্টেপ ওয়ার্কফ্লো</span>
+    <div id="super-agent-container" className="max-w-6xl mx-auto px-4 py-6 space-y-6">
+      {/* Header Banner */}
+      <div className="bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden border border-purple-500/20">
+        <div className="absolute -right-10 -bottom-10 w-72 h-72 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-3 max-w-2xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/20 border border-purple-400/30 text-purple-300 text-xs font-semibold tracking-wide">
+              <Sparkles className="w-3.5 h-3.5 text-purple-300 animate-pulse" />
+              <span>SUPER AGENT V2 • AUTONOMOUS EXECUTION ENGINE</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold font-['Hind_Siliguri',sans-serif]">
-              এআই এজেন্ট ওয়ার্কস্পেস
+            <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight text-white">
+              ১০-ধাপের স্বয়ংক্রিয় এআই সুপার এজেন্ট
             </h1>
-            <p className="text-xs sm:text-sm text-amber-100 max-w-xl font-['Hind_Siliguri',sans-serif]">
-              শুধু একটি উদ্দেশ্য বা প্রজেক্টের নাম দিন। এআই নিজে কাজগুলোকে ভাগ
-              করে রিসার্চ, স্ক্রিপ্ট, অডিও, ভিডিও এবং এসইও ধাপে ধাপে তৈরি করবে।
+            <p className="text-purple-200/90 text-sm md:text-base leading-relaxed">
+              শুধু আপনার লক্ষ্যটি বলুন—এজেন্ট নিজে প্ল্যানিং, রিসার্চ, স্ক্রিপ্ট, ইমেজ প্রম্পট, ভয়েসওভার, ভিডিও স্টোরিবোর্ড, সাবটাইটেল, থাম্বনেইল এবং এসইও সহ সম্পূর্ণ রেডি প্যাকেজ তৈরি করবে।
             </p>
           </div>
 
           <button
+            id="super-agent-export-btn"
             onClick={handleExportAll}
-            className="self-start md:self-center px-4 py-2 bg-white text-amber-900 hover:bg-amber-50 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all"
+            className="self-start md:self-auto flex items-center gap-2 px-4 py-2.5 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-xs md:text-sm font-semibold text-white transition-all shadow-sm"
           >
             <Download className="w-4 h-4" />
             <span>সম্পূর্ণ প্যাকেজ ডাউনলোড</span>
@@ -280,200 +364,256 @@ Please output thorough, professional, actionable results in Bengali (বাং�
         </div>
       </div>
 
-      {/* Goal Input Box */}
-      <div className="bg-white rounded-2xl border border-neutral-200 p-4 sm:p-5 shadow-xs space-y-4">
-        <div className="flex items-center justify-between">
-          <label className="text-sm font-bold text-neutral-900 font-['Hind_Siliguri',sans-serif] flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-amber-600" />
-            <span>আপনার প্রজেক্ট বা এজেন্টের মূল লক্ষ্য</span>
-          </label>
-          <span className="text-xs text-neutral-500 font-['Hind_Siliguri',sans-serif]">
-            টাস্ক → রিসার্চ → স্ক্রিপ্ট → অডিও → ভিডিও → এসইও
-          </span>
+      {/* Goal Input Card */}
+      <div className="bg-white dark:bg-neutral-900 rounded-2xl p-5 md:p-6 border border-neutral-200 dark:border-neutral-800 shadow-sm space-y-4">
+        <label className="block text-sm font-bold text-neutral-800 dark:text-neutral-200">
+          🎯 আপনার প্রজেক্ট বা লক্ষ্য নির্ধারণ করুন:
+        </label>
+        <div className="relative">
+          <textarea
+            id="super-agent-goal-input"
+            value={goal}
+            onChange={(e) => setGoal(e.target.value)}
+            rows={3}
+            placeholder="যেমন: একটা 60-second YouTube ভিডিও তৈরি করো—script, image prompt, voiceover, subtitle, thumbnail আর SEO সহ।"
+            className="w-full px-4 py-3 bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-300 dark:border-neutral-700 rounded-xl text-neutral-900 dark:text-neutral-100 placeholder-neutral-400 text-sm focus:ring-2 focus:ring-purple-600 focus:outline-none transition-all resize-none"
+          />
         </div>
 
-        <textarea
-          value={goal}
-          onChange={(e) => setGoal(e.target.value)}
-          rows={2}
-          placeholder="যেমন: 'একটি YouTube চ্যানেলের জন্য ১০টি ভিডিও তৈরির কমপ্লিট প্যাকেজ বানাও'..."
-          className="w-full p-3 rounded-xl border border-neutral-200 text-neutral-800 text-sm focus:border-amber-500 focus:ring-2 focus:ring-amber-100 focus:outline-none resize-none font-['Hind_Siliguri',sans-serif]"
-        />
+        {/* Presets */}
+        <div className="flex flex-wrap items-center gap-2 pt-1">
+          <span className="text-xs text-neutral-600 dark:text-neutral-400 font-medium">
+            রেডি প্রম্পটস:
+          </span>
+          {goalPresets.map((preset, idx) => (
+            <button
+              key={idx}
+              onClick={() => setGoal(preset.text)}
+              className="text-xs px-3 py-1.5 bg-neutral-100 dark:bg-neutral-800 hover:bg-purple-100 dark:hover:bg-purple-900/40 text-neutral-700 dark:text-neutral-300 hover:text-purple-700 dark:hover:text-purple-300 rounded-lg transition-colors border border-neutral-200 dark:border-neutral-700"
+            >
+              {preset.title}
+            </button>
+          ))}
+        </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
-          {/* Preset Prompts */}
-          <div className="flex flex-wrap gap-1.5 text-xs">
-            <button
-              onClick={() =>
-                setGoal(
-                  "একটি ইসলামিক ও লাইফস্টাইল YouTube চ্যানেলের জন্য ১০টি আকর্ষণীয় ভিডিওর কমপ্লিট প্যাকেজ তৈরি করো"
-                )
-              }
-              className="px-2.5 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg text-[11px]"
-            >
-              📺 YouTube ১০ ভিডিও
-            </button>
-            <button
-              onClick={() =>
-                setGoal(
-                  "একটি নতুন টেক ও এআই স্টার্টআপের জন্য পূর্ণাঙ্গ লঞ্চিং প্ল্যান ও ব্র্যান্ডিং প্যাকেজ তৈরি করো"
-                )
-              }
-              className="px-2.5 py-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg text-[11px]"
-            >
-              🚀 স্টার্টআপ লঞ্চ প্ল্যান
-            </button>
+        {/* Action Button */}
+        <div className="flex items-center justify-between pt-2">
+          <div className="flex items-center gap-2 text-xs text-neutral-600 dark:text-neutral-400">
+            <Cpu className="w-4 h-4 text-purple-600" />
+            <span>১০টি সম্পূর্ণ সমান্তরাল ও ধারাবাহিক পর্যায় রান হবে</span>
           </div>
 
           <button
+            id="run-super-agent-btn"
+            disabled={isRunning}
             onClick={runAutonomousAgent}
-            disabled={isRunning || !goal.trim()}
-            className="px-6 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2 shadow-xs transition-all disabled:opacity-50 cursor-pointer"
+            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-white shadow-lg transition-all ${
+              isRunning
+                ? "bg-purple-400 cursor-not-allowed"
+                : "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 shadow-purple-500/20 active:scale-95"
+            }`}
           >
             {isRunning ? (
               <>
-                <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                <span>ধাপে ধাপে সম্পন্ন হচ্ছে ({activeStepIndex + 1}/{steps.length})...</span>
+                <RefreshCw className="w-4 h-4 animate-spin" />
+                <span>এজেন্ট কাজ করছে ({activeStepIndex + 1}/১০)...</span>
               </>
             ) : (
               <>
                 <Play className="w-4 h-4 fill-current" />
-                <span>এজেন্ট এক্সিকিউট করুন</span>
+                <span>সুপার এজেন্ট রান করুন</span>
               </>
             )}
           </button>
         </div>
       </div>
 
-      {/* Steps Execution Pipeline */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between px-1">
-          <h2 className="text-base font-bold text-neutral-900 font-['Hind_Siliguri',sans-serif] flex items-center gap-2">
-            <Workflow className="w-4 h-4 text-amber-600" />
-            <span>অটোনোমাস এক্সিকিউশন পাইপলাইন (৯টি ধাপ)</span>
-          </h2>
-          <span className="text-xs text-neutral-500">
-            {steps.filter((s) => s.status === "completed").length} / {steps.length} ধাপ সম্পন্ন
-          </span>
-        </div>
-
-        {/* Step Cards List */}
-        <div className="space-y-3">
+      {/* 10-Phase Pipeline Progress Bar */}
+      <div className="bg-white dark:bg-neutral-900 rounded-2xl p-4 md:p-6 border border-neutral-200 dark:border-neutral-800 shadow-sm">
+        <h3 className="text-xs font-bold text-neutral-600 dark:text-neutral-400 uppercase tracking-wider mb-4">
+          ১০-ধাপের এক্সিকিউশন পাইপলাইন
+        </h3>
+        <div className="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-2">
           {steps.map((step, idx) => {
             const isCompleted = step.status === "completed";
             const isCurrent = step.status === "running";
-            const isExpanded = expandedStepId === step.id;
-
             return (
-              <div
+              <button
                 key={step.id}
-                className={`bg-white rounded-xl border transition-all ${
+                onClick={() => setExpandedStepId(step.id)}
+                className={`flex flex-col items-center justify-center p-2.5 rounded-xl border text-center transition-all ${
                   isCurrent
-                    ? "border-amber-500 ring-2 ring-amber-100 shadow-sm"
+                    ? "bg-purple-100 dark:bg-purple-900/40 border-purple-500 ring-2 ring-purple-400/40 text-purple-800 dark:text-purple-300"
                     : isCompleted
-                    ? "border-neutral-200 hover:border-neutral-300"
-                    : "border-neutral-200 opacity-60"
+                    ? "bg-emerald-50 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800/40 text-emerald-800 dark:text-emerald-300"
+                    : "bg-neutral-50 dark:bg-neutral-800/50 border-neutral-200 dark:border-neutral-800 text-neutral-600 dark:text-neutral-400"
                 }`}
               >
-                {/* Step Header Bar */}
-                <div
-                  onClick={() => setExpandedStepId(isExpanded ? null : step.id)}
-                  className="p-3.5 flex items-center justify-between cursor-pointer select-none"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="shrink-0">
-                      {isCompleted ? (
-                        <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-                      ) : isCurrent ? (
-                        <Clock className="w-5 h-5 text-amber-600 animate-spin" />
-                      ) : (
-                        <Circle className="w-5 h-5 text-neutral-300" />
-                      )}
-                    </div>
-                    <div>
-                      <div className="text-xs sm:text-sm font-bold text-neutral-900 font-['Hind_Siliguri',sans-serif]">
-                        {step.titleBn}
-                      </div>
-                      <div className="text-[11px] text-neutral-500 font-mono">
-                        {step.title}
-                      </div>
-                    </div>
-                  </div>
+                <span className="text-[10px] font-bold">
+                  {idx + 1}. {step.actionType?.toUpperCase()}
+                </span>
+                <div className="mt-1">
+                  {isCompleted ? (
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                  ) : isCurrent ? (
+                    <Clock className="w-4 h-4 text-purple-600 dark:text-purple-400 animate-spin" />
+                  ) : (
+                    <Circle className="w-4 h-4 text-neutral-400" />
+                  )}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
-                        isCompleted
-                          ? "bg-emerald-100 text-emerald-800"
-                          : isCurrent
-                          ? "bg-amber-100 text-amber-800 animate-pulse"
-                          : "bg-neutral-100 text-neutral-500"
-                      }`}
-                    >
-                      {isCompleted ? "সম্পন্ন ✓" : isCurrent ? "চলমান ⏳" : "অপেক্ষমাণ"}
+      {/* Detailed Accordion of All 10 Steps */}
+      <div className="space-y-3">
+        {steps.map((step, index) => {
+          const isExpanded = expandedStepId === step.id;
+          const isCompleted = step.status === "completed";
+          const isCurrent = step.status === "running";
+
+          return (
+            <div
+              key={step.id}
+              id={`agent-step-${step.id}`}
+              className={`rounded-2xl border transition-all overflow-hidden ${
+                isCurrent
+                  ? "bg-purple-50/50 dark:bg-purple-950/20 border-purple-500/40 shadow-md"
+                  : "bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 shadow-sm"
+              }`}
+            >
+              <div
+                onClick={() => setExpandedStepId(isExpanded ? null : step.id)}
+                className="px-5 py-4 flex items-center justify-between cursor-pointer select-none hover:bg-neutral-50/70 dark:hover:bg-neutral-800/40 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs ${
+                      isCompleted
+                        ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300"
+                        : isCurrent
+                        ? "bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 animate-pulse"
+                        : "bg-neutral-100 dark:bg-neutral-800 text-neutral-500"
+                    }`}
+                  >
+                    {isCompleted ? <Check className="w-4 h-4" /> : index + 1}
+                  </div>
+                  <div>
+                    <h4 className="text-sm md:text-base font-bold text-neutral-900 dark:text-neutral-100">
+                      {step.titleBn}
+                    </h4>
+                    <span className="text-xs text-neutral-600 dark:text-neutral-400">
+                      {step.title}
                     </span>
-                    {isExpanded ? (
-                      <ChevronUp className="w-4 h-4 text-neutral-400" />
-                    ) : (
-                      <ChevronDown className="w-4 h-4 text-neutral-400" />
-                    )}
                   </div>
                 </div>
 
-                {/* Step Expanded Content */}
-                {isExpanded && step.output && (
-                  <div className="px-4 pb-4 pt-1 border-t border-neutral-100 text-xs text-neutral-800 space-y-3 font-['Hind_Siliguri',sans-serif]">
-                    <div className="bg-neutral-50 rounded-xl p-3.5 border border-neutral-200 font-sans whitespace-pre-wrap leading-relaxed">
-                      {step.output}
-                    </div>
+                <div className="flex items-center gap-2">
+                  {step.actionType === "voice" && (
+                    <span className="hidden sm:inline-flex items-center gap-1 text-[11px] font-semibold text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/40 px-2.5 py-1 rounded-md">
+                      <Volume2 className="w-3.5 h-3.5" />
+                      ভয়েস রেডি
+                    </span>
+                  )}
+                  {step.actionType === "image" && (
+                    <span className="hidden sm:inline-flex items-center gap-1 text-[11px] font-semibold text-pink-700 dark:text-pink-300 bg-pink-100 dark:bg-pink-900/40 px-2.5 py-1 rounded-md">
+                      <ImageIcon className="w-3.5 h-3.5" />
+                      ইমেজ প্রম্পট
+                    </span>
+                  )}
+                  {step.actionType === "subtitle" && (
+                    <span className="hidden sm:inline-flex items-center gap-1 text-[11px] font-semibold text-blue-700 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/40 px-2.5 py-1 rounded-md">
+                      <Subtitles className="w-3.5 h-3.5" />
+                      SRT সাবটাইটেল
+                    </span>
+                  )}
+                  {isExpanded ? (
+                    <ChevronUp className="w-5 h-5 text-neutral-400" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-neutral-400" />
+                  )}
+                </div>
+              </div>
 
-                    {/* Action buttons on this step */}
-                    <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+              {isExpanded && (
+                <div className="px-5 pb-5 pt-1 border-t border-neutral-100 dark:border-neutral-800 space-y-4">
+                  {/* Output content box */}
+                  <div className="p-4 bg-neutral-50 dark:bg-neutral-800/60 rounded-xl text-neutral-800 dark:text-neutral-200 text-sm whitespace-pre-wrap leading-relaxed font-sans border border-neutral-200/60 dark:border-neutral-700/60">
+                    {step.output || "ফলাফল লোড হচ্ছে..."}
+                  </div>
+
+                  {/* Actions for this specific step */}
+                  <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      {/* Copy step button */}
                       <button
                         onClick={() => handleCopyStep(step.id, step.output)}
-                        className="px-2.5 py-1 rounded bg-neutral-100 hover:bg-neutral-200 text-neutral-700 text-[11px] flex items-center gap-1"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-300 text-xs font-semibold transition-colors"
                       >
                         {copiedStepId === step.id ? (
                           <>
-                            <Check className="w-3 h-3 text-emerald-600" />
-                            <span>কপি হয়েছে!</span>
+                            <Check className="w-3.5 h-3.5 text-emerald-600" />
+                            <span>কপি হয়েছে</span>
                           </>
                         ) : (
                           <>
-                            <Copy className="w-3 h-3" />
-                            <span>টেক্সট কপি</span>
+                            <Copy className="w-3.5 h-3.5" />
+                            <span>কপি করুন</span>
                           </>
                         )}
                       </button>
 
-                      <div className="flex items-center gap-2">
-                        {step.actionType === "voice" && onSendToAudio && (
-                          <button
-                            onClick={() => onSendToAudio(step.output || "")}
-                            className="px-2.5 py-1 rounded bg-purple-100 hover:bg-purple-200 text-purple-800 text-[11px] font-semibold flex items-center gap-1"
-                          >
-                            <Volume2 className="w-3 h-3" />
-                            <span>ভয়েস স্টুডিওতে পাঠান</span>
-                          </button>
-                        )}
+                      {/* Direct TTS generation if voice or script step */}
+                      {(step.actionType === "voice" || step.actionType === "script") && (
+                        <button
+                          disabled={generatingVoiceStepId === step.id}
+                          onClick={() =>
+                            handleGenerateVoiceForStep(step.id, step.output || "")
+                          }
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-100 dark:bg-purple-900/40 hover:bg-purple-200 text-purple-800 dark:text-purple-300 text-xs font-semibold transition-colors"
+                        >
+                          <Volume2 className="w-3.5 h-3.5" />
+                          <span>
+                            {generatingVoiceStepId === step.id
+                              ? "অডিও তৈরি হচ্ছে..."
+                              : "ভয়েস শুনুন (TTS)"}
+                          </span>
+                        </button>
+                      )}
 
-                        {step.actionType === "video" && onSendToStudio && (
-                          <button
-                            onClick={() => onSendToStudio("video", step.output || "")}
-                            className="px-2.5 py-1 rounded bg-indigo-100 hover:bg-indigo-200 text-indigo-800 text-[11px] font-semibold flex items-center gap-1"
-                          >
-                            <Video className="w-3 h-3" />
-                            <span>ভিডিও স্টুডিওতে পাঠান</span>
-                          </button>
-                        )}
-                      </div>
+                      {/* Transfer to other Studio */}
+                      {onSendToStudio && step.actionType === "video" && (
+                        <button
+                          onClick={() => onSendToStudio("video", step.output || "")}
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-100 dark:bg-indigo-900/40 hover:bg-indigo-200 text-indigo-800 dark:text-indigo-300 text-xs font-semibold transition-colors"
+                        >
+                          <Video className="w-3.5 h-3.5" />
+                          <span>ভিডিও স্টুডিওতে পাঠান</span>
+                        </button>
+                      )}
+
+                      {onSendToStudio && step.actionType === "image" && (
+                        <button
+                          onClick={() => onSendToStudio("image", step.output || "")}
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-pink-100 dark:bg-pink-900/40 hover:bg-pink-200 text-pink-800 dark:text-pink-300 text-xs font-semibold transition-colors"
+                        >
+                          <ImageIcon className="w-3.5 h-3.5" />
+                          <span>ইমেজ স্টুডিওতে পাঠান</span>
+                        </button>
+                      )}
                     </div>
+
+                    <span className="text-[11px] text-neutral-600 dark:text-neutral-400 font-mono">
+                      Phase {index + 1} / 10 • Ready
+                    </span>
                   </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

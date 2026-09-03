@@ -390,26 +390,61 @@ Return the entire updated HTML code.`;
 
           {/* AI Iteration / Modifier Box */}
           <div className="space-y-2">
-            <label className="text-xs font-bold text-neutral-800 font-['Hind_Siliguri',sans-serif] flex items-center gap-1.5">
-              <RefreshCw className="w-3.5 h-3.5 text-emerald-600" />
-              <span>AI দিয়ে পরিবর্তন করুন (Modify with AI)</span>
+            <label className="text-xs font-bold text-neutral-800 dark:text-neutral-200 font-['Hind_Siliguri',sans-serif] flex items-center justify-between">
+              <span className="flex items-center gap-1.5">
+                <RefreshCw className="w-3.5 h-3.5 text-emerald-600" />
+                <span>AI স্ট্রাকচারাল এডিটর</span>
+              </span>
+              <span className="text-[10px] bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 px-1.5 py-0.5 rounded font-mono">
+                Smart Patch
+              </span>
             </label>
             <p className="text-[11px] text-neutral-500 font-['Hind_Siliguri',sans-serif]">
-              যেমন: "ডার্ক মোড যোগ করো", "আরেকটি সেকশন যোগ করো", "বাটনগুলোর রঙ সোনালি করো"
+              পুরো কোড হাত দিয়ে না বদলিয়ে AI-কে বলুন কোন কম্পোনেন্ট কীভাবে পরিবর্তন করতে হবে:
             </p>
+
+            {/* Quick Component Edit Chips (Requested by user) */}
+            <div className="flex flex-wrap gap-1.5">
+              <button
+                onClick={() => {
+                  setModificationPrompt("Navbar-এর ব্যাকগ্রাউন্ড ডার্ক নেভি ব্লু এবং লিঙ্কগুলোর কালার গোল্ডেন করো।");
+                }}
+                className="text-[11px] px-2 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg border border-emerald-200 transition-colors"
+              >
+                🎨 "Navbar-এর color পরিবর্তন করো"
+              </button>
+              <button
+                onClick={() => {
+                  setModificationPrompt("Hero section-এ আরও বড় বোল্ড টাইটেল এবং ২টি আকর্ষণীয় বাটন যোগ করো।");
+                }}
+                className="text-[11px] px-2 py-1 bg-blue-50 hover:bg-blue-100 text-blue-800 rounded-lg border border-blue-200 transition-colors"
+              >
+                ⚡ "Hero Section মডিফাই করো"
+              </button>
+              <button
+                onClick={() => {
+                  setModificationPrompt("ওয়েবসাইটে একটি ৩-কলামের টেস্টিমোনিয়াল ও ইউজার রিভিউ সেকশন যোগ করো।");
+                }}
+                className="text-[11px] px-2 py-1 bg-purple-50 hover:bg-purple-100 text-purple-800 rounded-lg border border-purple-200 transition-colors"
+              >
+                ⭐ "টেস্টিমোনিয়াল যোগ করো"
+              </button>
+            </div>
+
             <textarea
               value={modificationPrompt}
               onChange={(e) => setModificationPrompt(e.target.value)}
               rows={2}
-              placeholder="কী পরিবর্তন করতে চান লিখুন..."
+              placeholder="যেমন: Navbar-এর কালার পার্পল করো, বাটনগুলোতে শ্যাডো দাও..."
               className="w-full p-2 text-xs rounded-xl border border-neutral-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 focus:outline-none resize-none font-['Hind_Siliguri',sans-serif]"
             />
             <button
               onClick={handleModify}
               disabled={isGenerating || !modificationPrompt.trim()}
-              className="w-full py-1.5 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center justify-center gap-1 disabled:opacity-50 cursor-pointer"
+              className="w-full py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center justify-center gap-1.5 disabled:opacity-50 cursor-pointer shadow-sm transition-all"
             >
-              <span>পরিবর্তন প্রয়োগ করুন</span>
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>স্মার্ট পরিবর্তন প্রয়োগ করুন</span>
             </button>
           </div>
 

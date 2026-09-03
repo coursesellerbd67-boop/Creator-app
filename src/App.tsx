@@ -11,6 +11,8 @@ import { ImageStudio } from "./components/ImageStudio";
 import { CodeStudio } from "./components/CodeStudio";
 import { ChatStudio } from "./components/ChatStudio";
 import { DocStudio } from "./components/DocStudio";
+import { WorkflowStudio } from "./components/WorkflowStudio";
+import { CustomAgentStudio } from "./components/CustomAgentStudio";
 import { AdminPanel } from "./components/AdminPanel";
 import { AdminApp } from "./components/AdminApp";
 import { TemplatesModal } from "./components/TemplatesModal";
@@ -354,6 +356,14 @@ export const App: React.FC = () => {
 
           {currentStudio === "doc" && (
             <DocStudio initialPrompt={activePrompt} />
+          )}
+
+          {currentStudio === "workflow" && (
+            <WorkflowStudio />
+          )}
+
+          {currentStudio === "custom_agent" && (
+            <CustomAgentStudio />
           )}
 
           {currentStudio === "admin" && (

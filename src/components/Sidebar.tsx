@@ -13,6 +13,8 @@ import {
   ShieldCheck,
   X,
   ChevronRight,
+  GitBranch,
+  Cpu,
 } from "lucide-react";
 import { StudioType } from "../types";
 import { PWAInstallButton } from "./PWAInstallButton";
@@ -55,10 +57,26 @@ export const Sidebar: React.FC<SidebarProps> = ({
     {
       id: "agent",
       label: "অটোনোমাস এআই এজেন্ট",
-      sub: "মাল্টি-স্টেপ টাস্ক এক্সিকিউশন",
+      sub: "১০-স্টেপ মাল্টি-টাস্ক এক্সিকিউশন",
       icon: Workflow,
-      badge: "পাওয়ারফুল",
+      badge: "V2 সুপার এজেন্ট",
       badgeColor: "bg-amber-100 text-amber-800",
+    },
+    {
+      id: "workflow",
+      label: "ওয়ার্কফ্লো ইঞ্জিন",
+      sub: "ড্র্যাগ-অ্যান্ড-ড্রপ নোড পাইপলাইন",
+      icon: GitBranch,
+      badge: "Pipeline",
+      badgeColor: "bg-indigo-100 text-indigo-800",
+    },
+    {
+      id: "custom_agent",
+      label: "কাস্টম এজেন্ট বিল্ডার",
+      sub: "নিজস্ব এআই এজেন্ট তৈরি ও ডিপ্লয়",
+      icon: Cpu,
+      badge: "Agent Lab",
+      badgeColor: "bg-cyan-100 text-cyan-800",
     },
     {
       id: "chat",
